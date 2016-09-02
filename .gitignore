@@ -8,6 +8,7 @@
 *.war
 *.ear
 *.iml
+*.idea/
 
 #build
 target/
