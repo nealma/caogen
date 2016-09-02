@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <title>角色管理</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" href="../../css/default.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../css/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../../css/reset.css" media="screen"/>
+    <link rel="stylesheet" type="text/css" href="../../css/text.css" media="screen"/>
+    <link rel="stylesheet" type="text/css" href="../../css/grid.css" media="screen"/>
+    <script type="text/javascript" src="../../js/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" src="../../js/jquery.easyui.min.1.4.5.js"></script>
+    <script type="text/javascript" src="../../js/easyui-lang-zh_CN.js"></script>
+    <script src="../../js/system_manage/system_manage_role.js" type="text/javascript"></script>
+    <style>
+        div#rMenu {
+            position: absolute;
+            visibility: hidden;
+            top: 0;
+            background-color: #C5C5C5;
+            text-align: left;
+            padding: 2px;
+            width: 80px;
+        }
+
+        div#rMenu ul li {
+            margin: 1px 0;
+            padding: 0 5px;
+            cursor: pointer;
+            list-style: none outside none;
+            background-color: #EAEAEA
+        }
+
+        .box.first {
+            margin-top: 0;
+        }
+
+        .box.grid {
+            padding-bottom: 0px;
+        }
+
+        .box h2 {
+            margin: 0 0;
+        }
+
+        .box {
+            padding-top: 0;
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+<div class="container_12">
+    <div title="角色分配" id="pt">
+        <div class="grid_6" style="border-right: 5px solid #E6EEF8">
+            <div>角色信息：</div>
+            <ul id="treeDemo" class="ztree"></ul>
+        </div>
+        <div class="grid_6">
+            <div>菜单信息：</div>
+            <ul id="menuTree" class="ztree"></ul>
+        </div>
+    </div>
+    <div class="grid_12">
+        <div style="margin-left:800px;align:right;margin-top:2px;">
+            <a href="javascript:assignFunctionRole()" class="easyui-linkbutton"
+               data-options="iconCls:'icon-save'">保存</a>
+        </div>
+    </div>
+    <div id="rMenu">
+        <ul>
+            <li id="r_addNode">
+                新增
+            </li>
+            <li id="r_updateNode">
+                编辑
+            </li>
+            <li id="r_deleteNode">
+                删除
+            </li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>
