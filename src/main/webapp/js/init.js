@@ -72,9 +72,9 @@ var _menus = {
 			"icon": "icon-sys",
 			"menuname": "系统管理",
 			"menus": [
-				{"menuid": "51", "menuname": "角色管理", "icon": "icon-nav", "url": "admin/system_manage/role.html"},
-				{"menuid": "52", "menuname": "菜单管理", "icon": "icon-nav", "url": "admin/system_manage/menu.html"},
-				{"menuid": "53", "menuname": "参数管理", "icon": "icon-nav", "url": "admin/system_manage/sysparams.html"}
+				{"menuid": "51", "menuname": "角色管理", "icon": "icon-nav", "url": "admin/sys/role.html"},
+				{"menuid": "52", "menuname": "菜单管理", "icon": "icon-nav", "url": "admin/sys/menu.html"},
+				{"menuid": "53", "menuname": "参数管理", "icon": "icon-nav", "url": "admin/sys/param.html"}
 			]
 		}
 	]

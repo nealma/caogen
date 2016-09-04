@@ -2,4 +2,7 @@
 <configuration>
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
     <logger name="org.springframework.web" level="DEBUG"/>
+    <logger name="com.caogen.dao" level="DEBUG"/>
+    <logger name="com.caogen.view" level="DEBUG"/>
+    <logger name="com.caogen.service" level="DEBUG"/>
 </configuration>

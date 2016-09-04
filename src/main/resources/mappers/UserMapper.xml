@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.caogen.dao.ResourceDao">
+
+    <resultMap id="UserResultMap" type="Resource">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="icon" property="icon"/>
+        <result column="url" property="link"/>
+        <result column="pid" property="pId"/>
+    </resultMap>
+
+    <select id="findList" resultMap="UserResultMap">
+        select * from t_sys_resource where rstatus=0;
+    </select>
+
+    <select id="findOne" resultMap="UserResultMap">
+        select * from t_sys_resource WHERE id=#{id}
+    </select>
+
+    <insert id="insert" parameterType="Resource" useGeneratedKeys="true" keyProperty="id">
+        insert into t_sys_resource(name,icon,url,pid) values(#{name},#{icon},#{link},#{pId})
+    </insert>
+
+    <update id="update" parameterType="Resource">
+        update t_sys_resource set name=#{name}, url=#{link}, icon=#{icon}, rstatus=#{rstatus} where id=#{id}
+    </update>
+
+    <update id="delete">
+        update t_sys_resource set rstatus=1 where id=#{id}
+    </update>
+</mapper>

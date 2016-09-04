@@ -1,12 +1,29 @@
 //######tree start
 var zTree, rMenu;
+var zNodes = [];
 //全局参数
 var config = {
-    initMenuUrl: "../systemManage/listMenu.action",
-    addMenuUrl: "../systemManage/createMenu.action",
-    updateMenuUrl: "../systemManage/updateMenu.action",
-    delMenuUrl: "../systemManage/deleteMenu.action"
+    initMenuUrl: "../../menus",
+    addMenuUrl: "../../menus",
+    updateMenuUrl: "../../menus",
+    delMenuUrl: "../../menus"
 };
+var setting = {
+    view: {
+        fontCss: getFontCss
+    },
+    data: {
+        simpleData: {
+            enable: true
+        }
+    },
+    callback: {
+        onRightClick: OnRightClick,
+        beforeRename: beforeRename,
+        onClick: itemClick
+    }
+};
+
 
 $(document).ready(function () {
     $("#pt").panel();
@@ -37,31 +54,13 @@ function getTree() {
     	url: config.initMenuUrl,
     	dataType: "json",
     	success: function (result) {
-    		zNodes = result;
-    		zNodes[0].icon = '../plugins/ztree/css/zTreeStyle/img/diy/1_open.png';
+    		zNodes = result.result;
+    		zNodes[0].icon = '../../lib/ztree/css/zTreeStyle/img/diy/1_open.png';
     		$.fn.zTree.init($("#treeDemo"), setting, zNodes);
     	}
     });
 }
 
-var setting = {
-    view: {
-        fontCss: getFontCss
-    },
-    data: {
-        simpleData: {
-            enable: true
-        }
-    },
-    callback: {
-        onRightClick: OnRightClick,
-        beforeRename: beforeRename,
-        onClick: itemClick
-    }
-};
-
-var zNodes = [
-];
 
 
 function OnRightClick(event, treeId, treeNode) {
@@ -76,11 +75,10 @@ function OnRightClick(event, treeId, treeNode) {
 
 function itemClick(event, treeId, treeNode){
     console.log(treeNode);
-    $("#functionId").val(treeNode.id);
-    $("#functionName").val(treeNode.name);
-    $("#parentFunctionId").val(treeNode.pId);
-    $("#functionUrl").val(treeNode.functionUrl||'');
-    $("#functionClass").val(treeNode.functionClass||'1');
+    $("#id").val(treeNode.id);
+    $("#name").val(treeNode.name);
+    $("#pId").val(treeNode.pId||0);
+    $("#link").val(treeNode.link||'');
 
 }
 
@@ -135,7 +133,7 @@ function saveMenu(){
     if($("#editFm").form('validate')){
         var params = formToJsonParms("editFm", "", "");
         $.ajax({
-            "type": "POST",
+            "type": "PUT",
             "dataType": "json",
             "url": config.updateMenuUrl,
             "data": params,
@@ -144,9 +142,8 @@ function saveMenu(){
                 if (json.type == 'SUCCESS') {
                     $.messager.alert(json.title, json.text,'info');
                     var treeNode = zTree.getSelectedNodes()[0];
-                    treeNode.name = params.functionName;
-                    treeNode.functionClass = params.functionClass;
-                    treeNode.functionUrl = params.functionUrl;
+                    treeNode.name = params.name;
+                    treeNode.link = params.link;
                     console.log(treeNode)
                     zTree.updateNode(treeNode);
                 }else{
@@ -161,13 +158,13 @@ function saveMenu(){
 }
 function beforeRename(treeId, treeNode, newName){
     console.log("before");
+    console.log(treeNode);
     if(treeNode){
         var param = {
-            "functionId": treeNode.id,
-            "functionName": newName,
-            "parentFunctionId": treeNode.pId,
-            "functionUrl": treeNode.functionUrl||'',
-            "functionClass": treeNode.functionClass||''
+            "id": treeNode.id,
+            "name": newName,
+            "pId": treeNode.pId,
+            "link": treeNode.link||'',
         };
         if(addStatus == true){
             $.ajax({
@@ -179,7 +176,7 @@ function beforeRename(treeId, treeNode, newName){
                 success: function (json) {
                     if (json.type == 'SUCCESS') {
                         console.log(json);
-                        treeNode.id = json.result[0].functionId;
+                        treeNode.id = json.result[0].id;
                         zTree.updateNode(treeNode)
                         addStatus = false;
                         $.messager.alert(json.title, json.text,'info');
@@ -192,13 +189,13 @@ function beforeRename(treeId, treeNode, newName){
             });
         }else{
             $.ajax({
-                "type": "POST",
+                "type": "PUT",
                 "dataType": "json",
                 "url": config.updateMenuUrl,
                 "data": param,
                 async: false,
                 success: function (json) {
-                    if (json.type == 'SUCCESS') {
+                    if (json.type != 'SUCCESS') {
                         $.messager.alert(json.title, json.text,'info');
                     }
                 },
@@ -225,33 +222,31 @@ function removeTreeNode() {
     hideRMenu();
     var nodes = zTree.getSelectedNodes();
     if (nodes && nodes.length > 0) {
-        if (nodes && nodes.length > 0) {
-            if (nodes[0].child && nodes[0].child.length > 0) {//父部门的情况
-                msg = "还有子节点，确认删除吗?";
-            } else {//子部门的情况
-                msg = "确认删除?";
-            }
-            $.messager.confirm('确认', msg, function (r) {
-                if (r) {
-                    $.ajax({
-                        "type": "POST",
-                        "dataType": "json",
-                        "url": config.delMenuUrl,
-                        "data": {functionId: nodes[0].id},
-                        async: false,
-                        success: function (json) {
-                            if (json.type == 'SUCCESS') {
-                                zTree.removeNode(nodes[0]);
-                                $.messager.alert(json.title, json.text,'info');
-                            }
-                        },
-                        error: function () {
-                            errorTimeoutPrompt();
-                        }
-                    });
-                }
-            });
+        if (nodes[0].child && nodes[0].child.length > 0) {//父部门的情况
+            msg = "还有子节点，确认删除吗?";
+        } else {//子部门的情况
+            msg = "确认删除?";
         }
+        console.log(nodes[0])
+        $.messager.confirm('确认', msg, function (r) {
+            if (r) {
+                $.ajax({
+                    "type": "DELETE",
+                    "dataType": "json",
+                    "url": config.delMenuUrl+"/"+nodes[0].id,
+                    async: false,
+                    success: function (json) {
+                        if (json.type == 'SUCCESS') {
+                            zTree.removeNode(nodes[0]);
+                            $.messager.alert(json.title, json.text,'info');
+                        }
+                    },
+                    error: function () {
+                        errorTimeoutPrompt();
+                    }
+                });
+            }
+        });
     }
 }
 
