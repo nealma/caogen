@@ -11,7 +11,15 @@
 
     <!-- properties -->
     <properties>
+        <spring.boot.mybatis>1.0.2</spring.boot.mybatis>
+        <mybatis.version>3.4.1</mybatis.version>
+        <mybatis.spring.version>1.3.0</mybatis.spring.version>
+        <fastjson.version>1.2.16</fastjson.version>
         <tomcat.version>8.5.4</tomcat.version>
+        <java.version>1.8</java.version>
+        <!-- use UTF-8 for everything -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
     <!-- Inherit defaults from Spring Boot -->
@@ -22,7 +30,6 @@
     </parent>
 
     <!-- Add typical dependencies for a web application -->
-    <!--<dependencyManagement>-->
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -40,11 +47,15 @@
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
-            <version>1.0.2</version>
+            <version>${spring.boot.mybatis}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
         </dependency>
         <!--  mysql  -->
         <dependency>
@@ -67,22 +78,26 @@
         <dependency>
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis</artifactId>
-            <version>3.4.1</version>
+            <version>${mybatis.version}</version>
         </dependency>
         <!-- mybatis-spring -->
         <dependency>
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis-spring</artifactId>
-            <version>1.3.0</version>
+            <version>${mybatis.spring.version}</version>
         </dependency>
         <!-- fastjson -->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>1.2.16</version>
+            <version>${fastjson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>springloaded</artifactId>
+            <version>1.2.6.RELEASE</version>
         </dependency>
     </dependencies>
-    <!--</dependencyManagement>-->
 
     <!-- Package as an executable jar -->
     <build>
@@ -90,13 +105,13 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <!--<dependencies>-->
-                    <!--<dependency>-->
-                        <!--<groupId>org.springframework</groupId>-->
-                        <!--<artifactId>springloaded</artifactId>-->
-                        <!--<version>1.2.5.RELEASE</version>-->
-                    <!--</dependency>-->
-                <!--</dependencies>-->
+                <dependencies>
+                <dependency>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>springloaded</artifactId>
+                    <version>1.2.6.RELEASE</version>
+                </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>

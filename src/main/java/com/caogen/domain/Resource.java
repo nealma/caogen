@@ -13,8 +13,8 @@ public class Resource {
     @NotNull
     @Min(0)
     private Long id;
-    @NotNull
-    @Size(min=2, max=50)
+    @NotNull(message = "name不能为空")
+    @Size(min=2, max=50, message = "name长度在2到50之间")
     private String name;
     private String icon;
     @NotNull

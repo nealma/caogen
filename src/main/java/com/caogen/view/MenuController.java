@@ -25,8 +25,8 @@ public class MenuController extends BaseController{
 
     @RequestMapping(value = "/menus", method = RequestMethod.GET)
     public String list(Resource resource){
-        List<Resource> list = null;
-        PromptMessage promptMessage = null;
+        List<Resource> list;
+        PromptMessage promptMessage;
         try {
             list = resourceService.findList();
             promptMessage = PromptMessage.createSuccessPrompt("0000", "  加载菜单成功");
@@ -41,9 +41,9 @@ public class MenuController extends BaseController{
 
     @RequestMapping(value = "/menus", method = RequestMethod.POST)
     public String create(Resource resource){
-        PromptMessage promptMessage = null;
+        PromptMessage promptMessage;
         try {
-            List<Resource> list = new ArrayList<Resource>();
+            List<Resource> list = new ArrayList<>();
             resourceService.insert(resource);
             promptMessage = PromptMessage.createSuccessPrompt("0000", "添加菜单成功");
             list.add(resource);
@@ -58,10 +58,10 @@ public class MenuController extends BaseController{
 
     @RequestMapping(value = "/menus", method = RequestMethod.PUT)
     public String update(@Valid Resource resource, BindingResult bindingResult){
-        PromptMessage promptMessage = null;
+        PromptMessage promptMessage;
         try {
             if(bindingResult.hasErrors()){
-                promptMessage = PromptMessage.createErrorPrompt("0000", "更新菜单失败");
+                promptMessage = PromptMessage.createErrorPrompt("0000", "更新菜单失败xxxxx");
                 List<FieldError> fieldErrors = bindingResult.getFieldErrors();
                 for (FieldError field : fieldErrors) {
 
@@ -70,7 +70,7 @@ public class MenuController extends BaseController{
                 }
                 return this.renderJson(promptMessage);
             }
-            List<Resource> list = new ArrayList<Resource>();
+            List<Resource> list = new ArrayList<>();
             resourceService.update(resource);
             promptMessage = PromptMessage.createSuccessPrompt("0000", "更新菜单成功");
             list.add(resource);
@@ -85,7 +85,7 @@ public class MenuController extends BaseController{
 
     @RequestMapping(value = "/menus/{id}", method = RequestMethod.DELETE)
     public String delete(@PathVariable("id") Long id){
-        PromptMessage promptMessage = null;
+        PromptMessage promptMessage;
         try {
             resourceService.delete(id);
             promptMessage = PromptMessage.createSuccessPrompt("0000", "删除菜单成功");
