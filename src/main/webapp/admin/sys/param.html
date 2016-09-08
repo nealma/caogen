@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html>
 <head>
 	<title>系统参数</title>
@@ -6,32 +6,32 @@
 	<link rel="stylesheet" type="text/css" href="../../css/reset.css" media="screen" />
 	<link rel="stylesheet" type="text/css" href="../../css/easyui/themes/default/easyui.css">
 	<link rel="stylesheet" type="text/css" href="../../css/easyui/themes/icon.css">
-	<link rel="stylesheet" href="../../lib/ztree/css/demo.css" type="text/css">
 	<link rel="stylesheet" type="text/css" href="../../css/text.css" media="screen" />
 	<link rel="stylesheet" type="text/css" href="../../css/grid.css" media="screen" />
 	<link rel="stylesheet" type="text/css" href="../../css/layout.css" media="screen" />
-	<link rel="stylesheet" type="text/css" href="../../css/nav.css" media="screen" />
+	<script type="text/javascript" src="../../js/common.js"></script>
 
 	<script type="text/javascript" src="../../js/jquery-1.7.2.min.js"></script>
 	<script type="text/javascript" src="../../js/jquery.easyui.min.1.4.5.js"></script>
 	<script type="text/javascript" src="../../js/easyui-lang-zh_CN.js"></script>
-	<script src="../../js/system_manage/system_manage_sysparams.js" type="text/javascript"></script>
+	<script src="../../js/sys/param.js" type="text/javascript"></script>
 </head>
 <body>
 <div class="container_12">
 	<div class="grid_12">
 		<!-- 列表信息 -->
 		<div style="margin-top:10px;">
-			<table id="unitRailLockTb"  class="easyui-datagrid" title="系统参数信息列表"
+			<table id="lingyiTable"  class="easyui-datagrid" title="系统参数信息列表"
 				   style="width:auto;" fitcolumns="true"
 				   data-options="singleSelect:true,pagination:true,autoRowHeight:true,rownumbers:true,fitcolumns:true">
 				<thead>
 				<tr>
-					<th data-options="field:'paraName',width:30">参数名称</th>
-					<th data-options="field:'paraValue',width:30">参数值</th>
-					<th data-options="field:'paraDesc',width:30">参数描述</th>
-					<th data-options="field:'createTime',width:30">创建时间</th>
-					<th data-options="field:'lastModifyTime',width:30">最近编辑时间</th>
+					<th data-options="field:'id',width:30">ID</th>
+					<th data-options="field:'name',width:30">名称</th>
+					<th data-options="field:'value',width:30">数值</th>
+					<th data-options="field:'remark',width:30">描述</th>
+					<th data-options="field:'ctime',width:30">创建时间</th>
+					<th data-options="field:'mtime',width:30">最近编辑时间</th>
 				</tr>
 				</thead>
 			</table>
@@ -43,26 +43,34 @@
 	<table class="form" id="editFm">
 		<tr>
 			<td class="col1">
-				<label>参数名称: </label>
+				<label>ID: </label>
 			</td>
 			<td class="col1">
-				<input type="text" id="paraName" class="easyui-validatebox tb" data-options="required:true,validType:'length[1,10]'">
-			</td>
-		</tr>
-		<tr>
-			<td class="col1">
-				<label>参数值: </label>
-			</td>
-			<td class="col1">
-				<input type="text"  id="paraValue" class="easyui-validatebox tb" data-options="required:true,validType:'length[1,10]'">
+				<input type="text" id="id" disabled value="" class="easyui-validatebox tb" data-options="validType:'length[1,10]'">
 			</td>
 		</tr>
 		<tr>
 			<td class="col1">
-				<label>参数描述: </label>
+				<label>名称: </label>
 			</td>
 			<td class="col1">
-				<input type="text"  id="paraDesc" class="easyui-validatebox tb" data-options="validType:'length[1,10]'">
+				<input type="text" id="name" class="easyui-validatebox tb" data-options="required:true,validType:'length[1,10]'">
+			</td>
+		</tr>
+		<tr>
+			<td class="col1">
+				<label>数值: </label>
+			</td>
+			<td class="col1">
+				<input type="text"  id="value" class="easyui-validatebox tb" data-options="required:true,validType:'length[1,10]'">
+			</td>
+		</tr>
+		<tr>
+			<td class="col1">
+				<label>描述: </label>
+			</td>
+			<td class="col1">
+				<input type="text"  id="remark" class="easyui-validatebox tb" data-options="validType:'length[1,10]'">
 			</td>
 		</tr>
 	</table>

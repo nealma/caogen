@@ -2,49 +2,39 @@ package com.caogen.domain;
 
 import com.caogen.core.domain.Page;
 
-public class Resource extends Page {
+public class Param extends Page {
     /**
-     *  自增主键,所属表字段为t_sys_resource.id
+     *  自增主键,所属表字段为t_sys_param.id
      */
     private Long id;
 
     /**
-     *  名称,所属表字段为t_sys_resource.name
+     *  名称,所属表字段为t_sys_param.name
      */
     private String name;
 
     /**
-     *  图标,所属表字段为t_sys_resource.icon
+     *  父角色id,所属表字段为t_sys_param.value
      */
-    private String icon;
+    private String value;
 
     /**
-     *  资源url,所属表字段为t_sys_resource.url
-     */
-    private String url;
-
-    /**
-     *  父资源id,所属表字段为t_sys_resource.pid
-     */
-    private Long pid;
-
-    /**
-     *  备注,所属表字段为t_sys_resource.remark
+     *  备注,所属表字段为t_sys_param.remark
      */
     private String remark;
 
     /**
-     *  创建时间,所属表字段为t_sys_resource.ctime
+     *  创建时间,所属表字段为t_sys_param.ctime
      */
     private Long ctime;
 
     /**
-     *  最后更新时间,所属表字段为t_sys_resource.mtime
+     *  最后更新时间,所属表字段为t_sys_param.mtime
      */
     private Long mtime;
 
     /**
-     *  状态 0:正常 1:删除,所属表字段为t_sys_resource.rstatus
+     *  状态 0:正常 1:删除,所属表字段为t_sys_param.rstatus
      */
     private Byte rstatus;
 
@@ -64,28 +54,12 @@ public class Resource extends Page {
         this.name = name == null ? null : name.trim();
     }
 
-    public String getIcon() {
-        return icon;
+    public String getValue() {
+        return value;
     }
 
-    public void setIcon(String icon) {
-        this.icon = icon == null ? null : icon.trim();
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url == null ? null : url.trim();
-    }
-
-    public Long getPid() {
-        return pid;
-    }
-
-    public void setPid(Long pid) {
-        this.pid = pid;
+    public void setValue(String value) {
+        this.value = value == null ? null : value.trim();
     }
 
     public String getRemark() {

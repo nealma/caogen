@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="test.dao.RoleMapper">
+  <resultMap id="resultMap" type="test.model.Role">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="pid" jdbcType="BIGINT" property="pid" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="ctime" jdbcType="BIGINT" property="ctime" />
+    <result column="mtime" jdbcType="BIGINT" property="mtime" />
+    <result column="rstatus" jdbcType="VARCHAR" property="rstatus" />
+  </resultMap>
+  <sql id="baseColumnList">
+    id, name, pid, remark, ctime, mtime, rstatus
+  </sql>
+  <sql id="whereCause">
+    <where>
+      <if test="id != null and id != ''">
+        id=#{id,jdbcType=BIGINT}
+      </if>
+      <if test="name != null and name != ''">
+        name=#{name,jdbcType=VARCHAR}
+      </if>
+      <if test="pid != null and pid != ''">
+        pid=#{pid,jdbcType=BIGINT}
+      </if>
+      <if test="remark != null and remark != ''">
+        remark=#{remark,jdbcType=VARCHAR}
+      </if>
+      <if test="ctime != null and ctime != ''">
+        ctime=#{ctime,jdbcType=BIGINT}
+      </if>
+      <if test="mtime != null and mtime != ''">
+        mtime=#{mtime,jdbcType=BIGINT}
+      </if>
+      <if test="rstatus != null and rstatus != ''">
+        rstatus=#{rstatus,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </sql>
+  <select id="select" parameterType="test.model.Role" resultMap="resultMap">
+    select
+    <include refid="baseColumnList" />
+    from t_sys_role
+    <include refid="whereClause" />
+  </select>
+  <select id="selectByPK" parameterType="java.lang.Long" resultMap="resultMap">
+    select 
+    <include refid="baseColumnList" />
+    from t_sys_role
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPK" parameterType="java.lang.Long">
+    delete from t_sys_role
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="test.model.Role">
+    insert into t_sys_role
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null and id != ''">
+        id,
+      </if>
+      <if test="name != null and name != ''">
+        name,
+      </if>
+      <if test="pid != null and pid != ''">
+        pid,
+      </if>
+      <if test="remark != null and remark != ''">
+        remark,
+      </if>
+      <if test="ctime != null and ctime != ''">
+        ctime,
+      </if>
+      <if test="mtime != null and mtime != ''">
+        mtime,
+      </if>
+      <if test="rstatus != null and rstatus != ''">
+        rstatus,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null and id != ''">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="name != null and name != ''">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="pid != null and pid != ''">
+        #{pid,jdbcType=BIGINT},
+      </if>
+      <if test="remark != null and remark != ''">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="ctime != null and ctime != ''">
+        #{ctime,jdbcType=BIGINT},
+      </if>
+      <if test="mtime != null and mtime != ''">
+        #{mtime,jdbcType=BIGINT},
+      </if>
+      <if test="rstatus != null and rstatus != ''">
+        #{rstatus,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPK" parameterType="test.model.Role">
+    update t_sys_role
+    <set>
+      <if test="name != null and name != ''">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="pid != null and pid != ''">
+        pid = #{pid,jdbcType=BIGINT},
+      </if>
+      <if test="remark != null and remark != ''">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="ctime != null and ctime != ''">
+        ctime = #{ctime,jdbcType=BIGINT},
+      </if>
+      <if test="mtime != null and mtime != ''">
+        mtime = #{mtime,jdbcType=BIGINT},
+      </if>
+      <if test="rstatus != null and rstatus != ''">
+        rstatus = #{rstatus,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

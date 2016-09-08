@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Common">
+    <!-- Oracle Page -->
+	<sql id="pageHeadOracle">
+		<![CDATA[
+		select t.* from (
+			select rownum rownum_, bean.* from (
+				select * from (
+		]]>
+	</sql>
+	<sql id="pageTailOracle">
+	   	<![CDATA[
+				) where rownum <= #{pageSize} * #{pageNo}
+			) bean 
+		) t where rownum_ > #{pageSize} * (#{pageNo} - 1)
+		]]>
+	</sql>
+	<!-- MySQL Page -->
+	<sql id="pageHeadMySQL">
+		<![CDATA[
+		select bean.* from (
+
+		]]>
+	</sql>
+	<!-- SELECT * FROM table WHERE 查询条件 ORDER BY 排序条件 LIMIT ((页码-1)*页大小),页大小; -->
+	<sql id="pageTailMySQL">
+		<![CDATA[
+			) bean limit #{offset}, #{rows}
+		]]>
+	</sql>
+
+	<select id="getLongSequenceNextValue" resultType="Long">
+		<if test="value == null or value == ''">
+			SELECT to_char(SYSDATE,'yyyymmdd') ||
+			trim(to_char(SEQ_KG_LONG.nextval,'000000')) as NEXTVAL FROM dual
+		</if>
+		<if test="value != null and value != ''">
+			SELECT to_char(SYSDATE,'yyyymmdd') ||
+			trim(to_char(${value}.nextval,'000000')) as NEXTVAL FROM dual
+		</if>
+	</select>
+	<select id="getStringSequenceNextValue" resultType="String">
+		<if test="value == null or value == ''">
+			SELECT to_char(SYSDATE,'yyyymmdd') ||
+			trim(to_char(SEQ_KG.nextval,'000000')) as NEXTVAL FROM dual
+		</if>
+		<if test="value != null and value != ''">
+			SELECT to_char(SYSDATE,'yyyymmdd') ||
+			trim(to_char(${value}.nextval,'000000')) as NEXTVAL FROM dual
+		</if>
+	</select>
+</mapper>

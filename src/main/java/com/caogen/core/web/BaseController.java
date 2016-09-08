@@ -1,6 +1,8 @@
 package com.caogen.core.web;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.caogen.core.domain.Page;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -18,6 +20,13 @@ public abstract class BaseController {
 
     protected String renderJson(Object object){
         return JSON.toJSONString(object);
+    }
+
+    protected String renderPageJson(Page object) {
+        JSONObject json = new JSONObject();
+        json.put("total", object.getTotal());
+        json.put("rows", object.getResult());
+        return JSON.toJSONString(json);
     }
 
     protected HttpServletRequest getRequest(){

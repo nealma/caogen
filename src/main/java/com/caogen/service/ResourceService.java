@@ -1,6 +1,7 @@
 package com.caogen.service;
 
-import com.caogen.dao.ResourceDao;
+import com.caogen.core.service.BaseService;
+import com.caogen.dao.ResourceMapper;
 import com.caogen.domain.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,10 +12,10 @@ import java.util.List;
  * Created by neal on 9/3/16.
  */
 @Service
-public class ResourceService {
+public class ResourceService implements BaseService<Resource>{
 
     @Autowired
-    private ResourceDao resourceDao;
+    private ResourceMapper resourceDao;
 
     public Resource insert(Resource resource){
         resourceDao.insert(resource);
@@ -22,21 +23,20 @@ public class ResourceService {
     }
 
     public Resource update(Resource resource){
-        resourceDao.update(resource);
+        resourceDao.updateByPK(resource);
         return resource;
     }
 
     public int delete(Long id){
 
-        return resourceDao.delete(id);
+        return resourceDao.deleteByPK(id);
     }
 
-    public Resource findOne(Resource resource){
-        resourceDao.findOne(resource.getId());
-        return resource;
+    public Resource selectByPK(Long id) {
+        return resourceDao.selectByPK(id);
     }
 
-    public List<Resource> findList(){
-        return resourceDao.findList();
+    public List<Resource> select(Resource resource){
+        return resourceDao.select(resource);
     }
 }

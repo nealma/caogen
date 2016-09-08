@@ -1,15 +1,17 @@
 $(document).ready(function(){
 	$("#pt").panel();
-	$("#unitRailLockTb").datagrid({
-		url:'../systemManage/listSysParaPage.action',
+	$("#lingyiTable").datagrid({
+		url: '../../params',
+        method: 'GET',
 		toolbar: [
 			{
 				text:'新增',
 				iconCls:'icon-add',
 				handler:function(){
 					updateFlag = 0;
-					// formClean("editFm");
-					$("#dialog").dialog('open');
+                    //TODO: CLear Form
+                    $(':input','#editFm').val('');
+                    $("#dialog").dialog('open');
 					$("#paraName").prop("disabled", false);
 				}
 			},'-',{
@@ -17,7 +19,7 @@ $(document).ready(function(){
 				iconCls:'icon-edit',
 				handler:function(){
 					updateFlag = 1;
-					var rows = $('#unitRailLockTb').datagrid('getSelected');
+					var rows = $('#lingyiTable').datagrid('getSelected');
 					if(rows){
 						bindForm("editFm", rows, "");
 						$("#dialog").dialog('open');
@@ -30,7 +32,7 @@ $(document).ready(function(){
 				text:'删除',
 				iconCls:'icon-remove',
 				handler:function(){
-					var rows = $('#unitRailLockTb').datagrid('getSelected');
+					var rows = $('#lingyiTable').datagrid('getSelected');
 					if(rows){
 						deleteData(rows.segmentId);
 					}else{
@@ -48,7 +50,7 @@ $(document).ready(function(){
 				iconCls:'icon-save',
 				handler:function(){
 					if(updateFlag == 0){
-						createData();
+                        createData();
 					}else{
 						updateData();
 					}
@@ -69,7 +71,7 @@ function queryData(){
 }
 
 function loadDatagrid(params){
-	$("#unitRailLockTb").datagrid("load", params);
+	$("#lingyiTable").datagrid("load", params);
 }
 
 //=====CRUD=== start
@@ -79,9 +81,9 @@ function updateData(){
 	if($("#editFm").form('validate')){
 		var params = formToJsonParms("editFm", "", "");
 		$.ajax({
-			"type": "POST",
+			"type": "PUT",
 			"dataType": "json",
-			"url": "../systemManage/updateSysPara.action",
+			"url": "../../params",
 			"data": params,
 			async: false,
 			success: function(json){
@@ -108,7 +110,7 @@ function createData(){
 		$.ajax({
 			"type": "POST",
 			"dataType": "json",
-			"url": "../systemManage/createSysPara.action",
+			"url": "../../params",
 			"data": params,
 			async: false,
 			success: function(json){
@@ -133,10 +135,10 @@ function deleteData() {
 		if (r) {
 			var params = formToJsonParms("editFm", "", "");
 			$.ajax({
-				"type": "POST",
+				"type": "DELETE",
 				"dataType": "json",
-				"url": "../systemManage/deleteSysPara.action",
-				"data": params,
+				"url": "../../params/"+ params.id,
+				"data": {},
 				async: false,
 				success: function (json) {
 					if (json.type == 'SUCCESS') {
