@@ -2,6 +2,7 @@ package com.caogen.service;
 
 import com.caogen.core.service.BaseService;
 import com.caogen.dao.RoleMapper;
+import com.caogen.domain.Param;
 import com.caogen.domain.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,7 +37,8 @@ public class RoleService implements BaseService<Role>{
     }
 
     public List<Role> select(Role role) {
-        return roleMapper.select(role);
+        role.setTotal(roleMapper.count(role));
+        role.setResult(roleMapper.select(role));
+        return role.getResult();
     }
-
 }

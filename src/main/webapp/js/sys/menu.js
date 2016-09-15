@@ -55,7 +55,18 @@ function getTree() {
     	dataType: "json",
     	success: function (result) {
     		zNodes = result.result;
-    		zNodes[0].icon = '../../lib/ztree/css/zTreeStyle/img/diy/1_open.png';
+
+            var node = {};
+            node.link = '-1';
+            node.name = '主页';
+            node.pid = 0;
+            node.id = 0;
+            node.icon = 'blue.png';
+            zNodes.unshift(node);
+            zNodes.forEach(function(t, i){
+                t.pId = t.pid;
+                t.icon = "../../images/" + t.icon;
+            })
     		$.fn.zTree.init($("#treeDemo"), setting, zNodes);
     	}
     });
@@ -64,22 +75,22 @@ function getTree() {
 
 
 function OnRightClick(event, treeId, treeNode) {
+
     if (!treeNode && event.target.tagName.toLowerCase() != "button" && $(event.target).parents("a").length == 0) {
         zTree.cancelSelectedNode();
         showRMenu("root", event.clientX, event.clientY);
     } else if (treeNode && !treeNode.noR) {
+        treeNode.pId = treeNode.pid;
         zTree.selectNode(treeNode);
         showRMenu(treeNode.level, event.clientX, event.clientY);
     }
 }
 
 function itemClick(event, treeId, treeNode){
-    console.log(treeNode);
     $("#id").val(treeNode.id);
     $("#name").val(treeNode.name);
-    $("#pId").val(treeNode.pId||0);
+    $("#pid").val(treeNode.pId);
     $("#link").val(treeNode.link||'');
-
 }
 
 
@@ -116,12 +127,14 @@ var addStatus = false;
 function addTreeNode() {
     hideRMenu();
     treeNode = zTree.getSelectedNodes()[0];
-    var newNode = {name: "增加" + (addCount++), pId: treeNode.pId};
+    treeNode.pId = treeNode.pid;
+    var newNode = {name: "增加" + (addCount++), pId: treeNode.id};
     if (treeNode) {
         $.messager.confirm('确认', "确认增加吗？", function (r) {
             if (r) {
                 newNode.checked = treeNode.checked;
                 treeNode = zTree.addNodes(treeNode, newNode);
+                treeNode[0].pId = newNode.pId;
                 zTree.editName(treeNode[0]);
                 addStatus = true;
             }
@@ -144,7 +157,6 @@ function saveMenu(){
                     var treeNode = zTree.getSelectedNodes()[0];
                     treeNode.name = params.name;
                     treeNode.link = params.link;
-                    console.log(treeNode)
                     zTree.updateNode(treeNode);
                 }else{
                     $.messager.alert(json.title, json.text,'error');
@@ -157,16 +169,14 @@ function saveMenu(){
     }
 }
 function beforeRename(treeId, treeNode, newName){
-    console.log("before");
-    console.log(treeNode);
     if(treeNode){
         var param = {
             "id": treeNode.id,
             "name": newName,
-            "pId": treeNode.pId,
             "link": treeNode.link||'',
         };
         if(addStatus == true){
+            param.pid = treeNode.id;
             $.ajax({
                 "type": "POST",
                 "dataType": "json",
@@ -175,7 +185,6 @@ function beforeRename(treeId, treeNode, newName){
                 async: false,
                 success: function (json) {
                     if (json.type == 'SUCCESS') {
-                        console.log(json);
                         treeNode.id = json.result[0].id;
                         zTree.updateNode(treeNode)
                         addStatus = false;
@@ -188,6 +197,7 @@ function beforeRename(treeId, treeNode, newName){
                 }
             });
         }else{
+            param.pid = treeNode.pId;
             $.ajax({
                 "type": "PUT",
                 "dataType": "json",
@@ -227,7 +237,6 @@ function removeTreeNode() {
         } else {//子部门的情况
             msg = "确认删除?";
         }
-        console.log(nodes[0])
         $.messager.confirm('确认', msg, function (r) {
             if (r) {
                 $.ajax({

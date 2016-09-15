@@ -1,33 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.caogen.dao.ResourceMapper">
-  <resultMap id="resultMap" type="com.caogen.domain.Resource">
+<mapper namespace="com.caogen.dao.UserRoleLinkMapper">
+  <resultMap id="resultMap" type="com.caogen.domain.UserRoleLink">
     <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="icon" jdbcType="VARCHAR" property="icon" />
-    <result column="link" jdbcType="VARCHAR" property="link" />
-    <result column="pid" jdbcType="BIGINT" property="pid" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="role_id" jdbcType="BIGINT" property="roleId" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="ctime" jdbcType="BIGINT" property="ctime" />
     <result column="mtime" jdbcType="BIGINT" property="mtime" />
     <result column="rstatus" jdbcType="TINYINT" property="rstatus" />
   </resultMap>
   <sql id="baseColumnList">
-    id, name, icon, link, pid, remark, ctime, mtime, rstatus
+    id, user_id, role_id, remark, ctime, mtime, rstatus
   </sql>
   <sql id="whereClause">
     <where>
-      <if test="name != null and name != ''">
-         AND name=#{name,jdbcType=VARCHAR}
+      <if test="userId != null and userId != ''">
+         AND user_id=#{userId,jdbcType=BIGINT}
       </if>
-      <if test="icon != null and icon != ''">
-         AND icon=#{icon,jdbcType=VARCHAR}
-      </if>
-      <if test="link != null and link != ''">
-         AND link=#{link,jdbcType=VARCHAR}
-      </if>
-      <if test="pid != null and pid != ''">
-         AND pid=#{pid,jdbcType=BIGINT}
+      <if test="roleId != null and roleId != ''">
+         AND role_id=#{roleId,jdbcType=BIGINT}
       </if>
       <if test="remark != null and remark != ''">
          AND remark=#{remark,jdbcType=VARCHAR}
@@ -43,45 +35,39 @@
       </if>
     </where>
   </sql>
-  <select id="select" parameterType="com.caogen.domain.Resource" resultMap="resultMap">
+  <select id="select" parameterType="com.caogen.domain.UserRoleLink" resultMap="resultMap">
     <include refid="Common.pageHeadMySQL" />
     select
     <include refid="baseColumnList" />
-    from t_sys_resource
+    from t_sys_user_role_link
     <include refid="whereClause" />
     <include refid="Common.pageTailMySQL" />
   </select>
-  <select id="count" parameterType="com.caogen.domain.Resource" resultType="java.lang.Long">
-    select count(1) from t_sys_resource
+  <select id="count" parameterType="com.caogen.domain.UserRoleLink" resultType="java.lang.Long">
+    select count(1) from t_sys_user_role_link
     <include refid="whereClause" />
   </select>
   <select id="selectByPK" parameterType="java.lang.Long" resultMap="resultMap">
     select 
     <include refid="baseColumnList" />
-    from t_sys_resource
+    from t_sys_user_role_link
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPK" parameterType="java.lang.Long">
-    delete from t_sys_resource
+    delete from t_sys_user_role_link
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.caogen.domain.Resource">
+  <insert id="insert" parameterType="com.caogen.domain.UserRoleLink">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into t_sys_resource
+    insert into t_sys_user_role_link
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="name != null and name != ''">
-        name,
+      <if test="userId != null and userId != ''">
+        user_id,
       </if>
-      <if test="icon != null and icon != ''">
-        icon,
-      </if>
-      <if test="link != null and link != ''">
-        link,
-      </if>
-      <if test="pid != null and pid != ''">
-        pid,
+      <if test="roleId != null and roleId != ''">
+        role_id,
       </if>
       <if test="remark != null and remark != ''">
         remark,
@@ -97,17 +83,11 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="name != null and name != ''">
-        #{name,jdbcType=VARCHAR},
+      <if test="userId != null and userId != ''">
+        #{userId,jdbcType=BIGINT},
       </if>
-      <if test="icon != null and icon != ''">
-        #{icon,jdbcType=VARCHAR},
-      </if>
-      <if test="link != null and link != ''">
-        #{link,jdbcType=VARCHAR},
-      </if>
-      <if test="pid != null and pid != ''">
-        #{pid,jdbcType=BIGINT},
+      <if test="roleId != null and roleId != ''">
+        #{roleId,jdbcType=BIGINT},
       </if>
       <if test="remark != null and remark != ''">
         #{remark,jdbcType=VARCHAR},
@@ -123,20 +103,14 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPK" parameterType="com.caogen.domain.Resource">
-    update t_sys_resource
+  <update id="updateByPK" parameterType="com.caogen.domain.UserRoleLink">
+    update t_sys_user_role_link
     <set>
-      <if test="name != null and name != ''">
-        name = #{name,jdbcType=VARCHAR},
+      <if test="userId != null and userId != ''">
+        user_id = #{userId,jdbcType=BIGINT},
       </if>
-      <if test="icon != null and icon != ''">
-        icon = #{icon,jdbcType=VARCHAR},
-      </if>
-      <if test="link != null and link != ''">
-        link = #{link,jdbcType=VARCHAR},
-      </if>
-      <if test="pid != null and pid != ''">
-        pid = #{pid,jdbcType=BIGINT},
+      <if test="roleId != null and roleId != ''">
+        role_id = #{roleId,jdbcType=BIGINT},
       </if>
       <if test="remark != null and remark != ''">
         remark = #{remark,jdbcType=VARCHAR},
@@ -153,11 +127,4 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <select id="selectBatch" parameterType="java.util.List" resultMap="resultMap">
-    select
-    <include refid="baseColumnList" />
-    from t_sys_resource
-    where ID in
-    <foreach collection="list" item="resourceId" open="(" separator="," close=")">#{resourceId}</foreach>
-  </select>
 </mapper>

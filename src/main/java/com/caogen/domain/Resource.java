@@ -19,9 +19,9 @@ public class Resource extends Page {
     private String icon;
 
     /**
-     *  资源url,所属表字段为t_sys_resource.url
+     *  资源url,所属表字段为t_sys_resource.link
      */
-    private String url;
+    private String link;
 
     /**
      *  父资源id,所属表字段为t_sys_resource.pid
@@ -72,12 +72,12 @@ public class Resource extends Page {
         this.icon = icon == null ? null : icon.trim();
     }
 
-    public String getUrl() {
-        return url;
+    public String getLink() {
+        return link;
     }
 
-    public void setUrl(String url) {
-        this.url = url == null ? null : url.trim();
+    public void setLink(String link) {
+        this.link = link == null ? null : link.trim();
     }
 
     public Long getPid() {

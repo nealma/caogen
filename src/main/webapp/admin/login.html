@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
 	<title>用户登录</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -27,21 +28,26 @@
 		}
 		function login() {
 
-			return $("#loginForm").form('validate');
-			console.log("hello")
-			if ($("input[name='login']").val() == "" || $("input[name='password']").val() == "") {
+			if(!$("#loginForm").form('validate')){
+				return false;
+			}
+
+			if ($("input[name='username']").val() == "" || $("input[name='password']").val() == "") {
 				$("#showMsg").html("用户名或密码为空，请输入");
 				$("input[name='login']").focus();
 			} else {
 			//ajax异步提交
-			// $.ajax({ type: "POST",
-			// post提交方式默认是get url: "login.action", data: $("#loginForm").serialize(),
-			// 序列化 error: function (request) {
-			// 设置表单提交出错 $("#showMsg").html(request);
-			// 登录错误提示信息 },
-			// success: function (data) {
-			// document.location = "index.action"; }
-			// });
+			 $.ajax({
+			 	type: "POST",
+			 	url: "/login",
+				data: $("#loginForm").serialize(),
+			 	error: function (request) {
+			 			$("#showMsg").html(request);
+					},
+			 	success: function (data) {
+			 			document.location = "/index";
+					}
+			 });
 			}
 		}
 	</script>
@@ -50,10 +56,16 @@
 <div id="loginWin" class="window" title="登录" style="width:320px;height:116px;padding:5px;left: 50%; top: 50%; margin: -86px 0 0 -160px;" minimizable="false" maximizable="false" resizable="false" collapsible="false">
 	<div class="easyui-layout" fit="true">
 		<div region="center" border="false" style="padding:5px;background:#fff;border:1px solid #ccc;">
+			<div th:if="${param.error}">
+				Invalid username and password.
+			</div>
+			<div th:if="${param.logout}">
+				You have been logged out.
+			</div>
 			<form id="loginForm" method="post">
 				<div style="padding:5px 0;">
-					<label for="login">帐号:</label>
-					<input type="text" name="login" class="easyui-validatebox tb" data-options="required:true,validType:'length[1,10]'" style="width:260px; height: 20px;" />
+					<label for="username">帐号:</label>
+					<input type="text" name="username" class="easyui-validatebox tb" data-options="required:true,validType:'length[1,10]'" style="width:260px; height: 20px;" />
 				</div>
 				<div style="padding:5px 0;">
 					<label for="password">密码:</label>

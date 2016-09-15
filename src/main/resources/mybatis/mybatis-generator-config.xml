@@ -63,25 +63,52 @@
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
         </table>
 
-        <table tableName="t_sys_param"
-               domainObjectName="Param"
-               mapperName="ParamMapper"
-               sqlProviderName="ParamMapper"
+        <!--<table tableName="t_sys_param"-->
+               <!--domainObjectName="Param"-->
+               <!--mapperName="ParamMapper"-->
+               <!--sqlProviderName="ParamMapper"-->
+               <!--enableCountByExample="false"-->
+               <!--enableUpdateByExample="false"-->
+               <!--enableDeleteByExample="false"-->
+               <!--enableSelectByExample="false"-->
+               <!--selectByExampleQueryId="false">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<property name="rootClass" value="com.caogen.core.domain.Page"/>-->
+            <!--<generatedKey column="id" sqlStatement="MySql" identity="true" />-->
+        <!--</table>-->
+
+        <!--<table tableName="t_sys_Resource"-->
+               <!--domainObjectName="Resource"-->
+               <!--mapperName="ResourceMapper"-->
+               <!--sqlProviderName="ResourceMapper"-->
+               <!--enableCountByExample="false"-->
+               <!--enableUpdateByExample="false"-->
+               <!--enableDeleteByExample="false"-->
+               <!--enableSelectByExample="false"-->
+               <!--selectByExampleQueryId="false">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<property name="rootClass" value="com.caogen.core.domain.Page"/>-->
+            <!--<generatedKey column="id" sqlStatement="MySql" identity="true" />-->
+        <!--</table>-->
+
+        <table tableName="t_sys_user_role_link"
+               domainObjectName="UserRoleLink"
+               mapperName="UserRoleLinkMapper"
+               sqlProviderName="UserRoleLinkMapper"
                enableCountByExample="false"
                enableUpdateByExample="false"
                enableDeleteByExample="false"
                enableSelectByExample="false"
                selectByExampleQueryId="false">
             <property name="useActualColumnNames" value="false"/>
-            <!-- 给Model添加一个父类 -->
             <property name="rootClass" value="com.caogen.core.domain.Page"/>
-            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
         </table>
 
-        <table tableName="t_sys_Resource"
-               domainObjectName="Resource"
-               mapperName="ResourceMapper"
-               sqlProviderName="ResourceMapper"
+        <table tableName="t_sys_user"
+               domainObjectName="SysUser"
+               mapperName="SysUserMapper"
+               sqlProviderName="SysUserMapper"
                enableCountByExample="false"
                enableUpdateByExample="false"
                enableDeleteByExample="false"
@@ -89,7 +116,8 @@
                selectByExampleQueryId="false">
             <property name="useActualColumnNames" value="false"/>
             <property name="rootClass" value="com.caogen.core.domain.Page"/>
-            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
         </table>
+
     </context>
 </generatorConfiguration>

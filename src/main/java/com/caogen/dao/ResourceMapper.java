@@ -1,6 +1,7 @@
 package com.caogen.dao;
 
 import com.caogen.domain.Resource;
+
 import java.util.List;
 
 public interface ResourceMapper {
@@ -15,4 +16,6 @@ public interface ResourceMapper {
     long count(Resource resource);
 
     List<Resource> select(Resource resource);
+
+    List<Resource> selectBatch(List<Long> resourceIds);
 }

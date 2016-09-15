@@ -1,11 +1,17 @@
 package com.caogen.view;
 
 import com.caogen.core.web.BaseController;
+import org.springframework.security.authentication.jaas.AuthorityGranter;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.List;
 
 /**
  * 入口
@@ -14,25 +20,31 @@ import org.springframework.web.servlet.ModelAndView;
 @RestController
 public class HomeController  extends BaseController {
 
-    @RequestMapping(value = {"", "/"}, method = RequestMethod.GET)
-    public ModelAndView home() {
+    @RequestMapping(value = {"", "/", "/login"}, method = RequestMethod.GET)
+    public ModelAndView login() {
         LOGGER.info("{}", "home");
-        ModelMap modelMap = new ModelMap();
-        return new ModelAndView("login", modelMap);
+        LOGGER.debug("[Security Context Holder]{}", SecurityContextHolder.getContext().getAuthentication().getName());
+        return new ModelAndView("login");
     }
 
     @RequestMapping(value = {"index"}, method = RequestMethod.GET)
     public ModelAndView index() {
         LOGGER.info("{}", "index");
-        ModelMap modelMap = new ModelMap();
-        return new ModelAndView("index", modelMap);
+        return new ModelAndView("index");
     }
 
     @RequestMapping(value = {"home"}, method = RequestMethod.GET)
-    public ModelAndView  index1(ModelAndView modelAndView) {
-        LOGGER.info("{}", "home");
-        ModelMap modelMap = new ModelMap();
-        return new ModelAndView("home/home", modelMap);
+    public ModelAndView home(Authentication authentication) {
+
+        LOGGER.debug("[Security Context Holder]{}", SecurityContextHolder.getContext().getAuthentication().getName());
+        if(authentication != null){
+            for (GrantedAuthority authority : authentication.getAuthorities()) {
+                String role = authority.getAuthority();
+                LOGGER.info("{}", "home " + role);
+            }
+        }
+
+        return new ModelAndView("home/home");
 
     }
 }

@@ -642,6 +642,7 @@
 			return r;
 		},
 		transformTozTreeFormat: function(setting, sNodes) {
+
 			var i,l,
 			key = setting.data.simpleData.idKey,
 			parentKey = setting.data.simpleData.pIdKey,

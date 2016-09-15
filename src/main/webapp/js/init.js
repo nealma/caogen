@@ -179,7 +179,7 @@ function addTab(subtitle,url,icon){
 }
 
 function createFrame(url){
-	return '<iframe scrolling="auto" frameborder="0"  src="'+url+'" style="width:100%;height:100%;"></iframe>';
+	return '<iframe scrolling="auto" frameborder="0" target="_top" src="'+url+'" style="width:100%;height:100%;"></iframe>';
 }
 
 function tabClose(){
@@ -275,7 +275,7 @@ function loginOut(){
 	$('#loginOut').click(function() {
 			$.messager.confirm('系统提示', '您确定要退出本次登录吗?', function(r) {
 					if (r) {
-							location.href = '/ajax/loginout.action';
+							location.href = '/logout';
 					}
 			});
 	});

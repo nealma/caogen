@@ -1,18 +1,35 @@
 //###### role tree start
-var zTree, rMenu;
+var zTree, rMenu, zNodes = [];
 //全局参数
 var config = {
-	initMenuUrl: "../systemManage/listMenu.action",
-	initDepartmentRoleUrl: "../organization/listDepartmentRolesTree.action",
-	addRoleUrl: "../systemManage/createRole.action",
-	updateRoleUrl: "../systemManage/updateRole.action",
-	delRoleUrl: "../systemManage/deleteRole.action"
+	initMenuUrl: "../../menus",
+	initDepartmentRoleUrl: "../../roles",
+	addRoleUrl: "../../roles",
+	updateRoleUrl: "../../roles",
+	delRoleUrl: "../../roles"
 }
+
+var setting = {
+	view: {
+		fontCss: getFontCss
+	},
+	data: {
+		simpleData: {
+			enable: true
+		}
+	},
+	callback: {
+		onRightClick: OnRightClick,
+		beforeRename: beforeRename,
+		onClick: itemClick
+	}
+};
 
 $(document).ready(function () {
 	$("#pt").panel();
 	//构造菜单树
 	getTree();
+	console.log(zNodes)
 	$.fn.zTree.init($("#treeDemo"), setting, zNodes);
 	zTree = $.fn.zTree.getZTreeObj("treeDemo");
 	rMenu = $("#rMenu");
@@ -37,30 +54,28 @@ function getTree() {
 		url: config.initDepartmentRoleUrl,
 		dataType: "json",
 		success: function (result) {
-			zNodes = result;
+			zNodes = result.result;
+			var node = {};
+			node.link = '-1';
+			node.name = '主页';
+			node.pid = 0;
+			node.id = 0;
+			node.icon = 'blue.png';
+			zNodes.unshift(node);
+			zNodes.forEach(function(t, i){
+				if(i > 0){
+					t.pId = t.pid;
+					t.icon = "../../images/green.png";
+				}else{
+					t.pId = t.pid;
+					t.icon = "../../images/blue.png";
+				}
+
+			})
 			$.fn.zTree.init($("#treeDemo"), setting, zNodes);
 		}
 	});
 }
-
-var setting = {
-	view: {
-		fontCss: getFontCss
-	},
-	data: {
-		simpleData: {
-			enable: true
-		}
-	},
-	callback: {
-		onRightClick: OnRightClick,
-		beforeRename: beforeRename,
-		onClick: itemClick
-	}
-};
-
-var zNodes = [
-];
 
 
 function OnRightClick(event, treeId, treeNode) {
@@ -68,6 +83,7 @@ function OnRightClick(event, treeId, treeNode) {
 		zTree.cancelSelectedNode();
 		showRMenu("root", event.clientX, event.clientY);
 	} else if (treeNode && !treeNode.noR) {
+		treeNode.pId = treeNode.pid;
 		zTree.selectNode(treeNode);
 		showRMenu(treeNode.level, event.clientX, event.clientY);
 	}
@@ -113,7 +129,7 @@ var addStatus = false;
 function addTreeNode() {
 	hideRMenu();
 	treeNode = zTree.getSelectedNodes()[0];
-	var newNode = {name: "增加" + (addCount++), pId: treeNode.pId};
+	var newNode = {name: "增加" + (addCount++), pid: treeNode.id};
 	if (treeNode) {
 		$.messager.confirm('确认', "确认增加吗？", function (r) {
 			if (r) {
@@ -130,7 +146,7 @@ function saveMenu(){
 	if($("#editFm").form('validate')){
 		var params = formToJsonParms("editFm", "", "");
 		$.ajax({
-			"type": "POST",
+			"type": "PUT",
 			"dataType": "json",
 			"url": config.updateRoleUrl,
 			"data": params,
@@ -139,7 +155,7 @@ function saveMenu(){
 				if (json.type == 'SUCCESS') {
 					$.messager.alert(json.title, json.text,'info');
 					var treeNode = zTree.getSelectedNodes()[0];
-					treeNode.name = params.departmentRoleName;
+					treeNode.name = params.name;
 					zTree.updateNode(treeNode);
 				}else{
 					$.messager.alert(json.title, json.text,'error');
@@ -154,9 +170,9 @@ function saveMenu(){
 function beforeRename(treeId, treeNode, newName){
 	if(treeNode){
 		var param = {
-			"departmentRoleId": treeNode.id,
-			"departmentRoleName": newName,
-			"parentDepartmentRoleId": treeNode.pId
+			"id": treeNode.id,
+			"name": newName,
+			"pid": treeNode.pid
 		};
 		if(addStatus == true){
 			$.ajax({
@@ -167,7 +183,7 @@ function beforeRename(treeId, treeNode, newName){
 				async: false,
 				success: function (json) {
 					if (json.type == 'SUCCESS') {
-						treeNode.id = json.result[0].departmentRoleId;
+						treeNode.id = json.result[0].id;
 						zTree.updateNode(treeNode)
 						addStatus = false;
 						$.messager.alert(json.title, json.text,'info');
@@ -180,14 +196,14 @@ function beforeRename(treeId, treeNode, newName){
 			});
 		}else{
 			$.ajax({
-				"type": "POST",
+				"type": "PUT",
 				"dataType": "json",
 				"url": config.updateRoleUrl,
 				"data": param,
 				async: false,
 				success: function (json) {
 					if (json.type == 'SUCCESS') {
-						$.messager.alert(json.title, json.text,'info');
+						// $.messager.alert(json.title, json.text,'info');
 					}
 				},
 				error: function () {
@@ -202,11 +218,11 @@ function renameTreeNode() {
 	hideRMenu();
 	treeNode = zTree.getSelectedNodes()[0];
 	if (treeNode) {
-		$.messager.confirm('确认', "确认修改吗？", function (r) {
-			if(r) {
+		// $.messager.confirm('确认', "确认修改吗？", function (r) {
+		// 	if(r) {
 				zTree.editName(treeNode);
-			}
-		});
+			// }
+		// });
 	}
 }
 function removeTreeNode() {
@@ -222,10 +238,10 @@ function removeTreeNode() {
 			$.messager.confirm('确认', msg, function (r) {
 				if (r) {
 					$.ajax({
-						"type": "POST",
+						"type": "DELETE",
 						"dataType": "json",
 						"url": config.delRoleUrl,
-						"data": {departmentRoleId: nodes[0].id},
+						"data": {id: nodes[0].id},
 						async: false,
 						success: function (json) {
 							if (json.type == 'SUCCESS') {
@@ -298,20 +314,20 @@ function assignFunctionRole() {
 		return;
 	}
 
-	var functionIds = [];
+	var mids = [];
 	for(var i=0;i<nodes.length;i++){
 		if(nodes[i].isParent == false){
-			functionIds.push(nodes[i].id);
+			mids.push(nodes[i].id);
 		}
 	}
-	if(functionIds.length==0){
+	if(mids.length==0){
 		return;
 	}
-	var departmentRoleId = roles[0].id;
-	$.ajax({
-		url: '../systemManage/assignFunctionRole.action',
+	var id = roles[0].id;
+	$.ajax({//TODO 授权
+		url: '../../menus/grant',
 		dataType: "json",
-		data: {departmentRoleId: departmentRoleId, functionIds: functionIds.join(',')},
+		data: {id: id, mids: mids.join(',')},
 		success: function (json) {
 			if (json.type == 'SUCCESS') {
 				$.messager.alert(json.title, json.text,'info');
@@ -327,15 +343,16 @@ function listFunctionRole() {
 	if(!roles || roles.length == 0){
 		return;
 	}
-	var departmentRoleId = roles[0].id;
-	$.ajax({
-		url: '../systemManage/listFunctionRole.action',
+	var roleId = roles[0].id;
+	$.ajax({//TODO 已经授权的菜单
+		url: '../../menus/' + roleId,
 		dataType: "json",
-		data: {departmentRoleId: departmentRoleId},
+		data: {},
+        type: "GET",
 		success: function (json) {
-			if(json && json.length > 0){
-				for( var i =0; i < json.length; i ++ ) {
-					var n1= zTreeMenu.getNodeByParam("id", json[i].functionId);
+			if(json && json.result && json.result.length > 0){
+				for( var i =0; i < json.result.length; i ++ ) {
+					var n1= zTreeMenu.getNodeByParam("id", json.result[i].id);
 					zTreeMenu.checkNode(n1, true, true);
 				}
 			}
@@ -362,7 +379,18 @@ function getMenuTree() {
 		url: config.initMenuUrl,
 		dataType: "json",
 		success: function (result) {
-			zNodesMenu = result;
+			zNodesMenu = result.result;
+			var node = {};
+			node.link = '-1';
+			node.name = '主页';
+			node.pid = 0;
+			node.id = 0;
+			node.icon = 'blue.png';
+			zNodesMenu.unshift(node);
+			zNodesMenu.forEach(function(t, i){
+				t.pId = t.pid;
+				t.icon = "../../images/" + t.icon;
+			})
 			$.fn.zTree.init($("#menuTree"), settingMenu, zNodesMenu);
 		}
 	});
@@ -385,7 +413,7 @@ var settingMenu = {
 function itemClickMenu(event, treeId, treeNode){
 	//$("#functionId").val(treeNode.id);
 	//$("#functionName").val(treeNode.name);
-	//$("#parentFunctionId").val(treeNode.pId);
+	//$("#parentFunctionId").val(treeNode.pid);
 	//$("#functionUrl").val(treeNode.functionUrl||'');
 	//$("#functionClass").val(treeNode.functionClass||'1');
 

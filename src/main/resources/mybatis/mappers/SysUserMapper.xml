@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.caogen.dao.SysUserMapper">
+  <resultMap id="resultMap" type="com.caogen.domain.SysUser">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="department" jdbcType="VARCHAR" property="department" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="position" jdbcType="VARCHAR" property="position" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="ctime" jdbcType="BIGINT" property="ctime" />
+    <result column="mtime" jdbcType="BIGINT" property="mtime" />
+    <result column="rstatus" jdbcType="TINYINT" property="rstatus" />
+  </resultMap>
+  <sql id="baseColumnList">
+    id, username, password, department, phone, position, remark, email, ctime, mtime, 
+    rstatus
+  </sql>
+  <sql id="whereClause">
+    <where>
+      <if test="username != null and username != ''">
+         AND username=#{username,jdbcType=VARCHAR}
+      </if>
+      <if test="password != null and password != ''">
+         AND password=#{password,jdbcType=VARCHAR}
+      </if>
+      <if test="department != null and department != ''">
+         AND department=#{department,jdbcType=VARCHAR}
+      </if>
+      <if test="phone != null and phone != ''">
+         AND phone=#{phone,jdbcType=VARCHAR}
+      </if>
+      <if test="position != null and position != ''">
+         AND position=#{position,jdbcType=VARCHAR}
+      </if>
+      <if test="remark != null and remark != ''">
+         AND remark=#{remark,jdbcType=VARCHAR}
+      </if>
+      <if test="email != null and email != ''">
+         AND email=#{email,jdbcType=VARCHAR}
+      </if>
+      <if test="ctime != null and ctime != ''">
+         AND ctime=#{ctime,jdbcType=BIGINT}
+      </if>
+      <if test="mtime != null and mtime != ''">
+         AND mtime=#{mtime,jdbcType=BIGINT}
+      </if>
+      <if test="rstatus != null and rstatus != ''">
+         AND rstatus=#{rstatus,jdbcType=TINYINT}
+      </if>
+    </where>
+  </sql>
+  <select id="select" parameterType="com.caogen.domain.SysUser" resultMap="resultMap">
+    <include refid="Common.pageHeadMySQL" />
+    select
+    <include refid="baseColumnList" />
+    from t_sys_user
+    <include refid="whereClause" />
+    <include refid="Common.pageTailMySQL" />
+  </select>
+  <select id="count" parameterType="com.caogen.domain.SysUser" resultType="java.lang.Long">
+    select count(1) from t_sys_user
+    <include refid="whereClause" />
+  </select>
+  <select id="selectByPK" parameterType="java.lang.Long" resultMap="resultMap">
+    select 
+    <include refid="baseColumnList" />
+    from t_sys_user
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPK" parameterType="java.lang.Long">
+    delete from t_sys_user
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.caogen.domain.SysUser">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_sys_user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="username != null and username != ''">
+        username,
+      </if>
+      <if test="password != null and password != ''">
+        password,
+      </if>
+      <if test="department != null and department != ''">
+        department,
+      </if>
+      <if test="phone != null and phone != ''">
+        phone,
+      </if>
+      <if test="position != null and position != ''">
+        position,
+      </if>
+      <if test="remark != null and remark != ''">
+        remark,
+      </if>
+      <if test="email != null and email != ''">
+        email,
+      </if>
+      <if test="ctime != null and ctime != ''">
+        ctime,
+      </if>
+      <if test="mtime != null and mtime != ''">
+        mtime,
+      </if>
+      <if test="rstatus != null and rstatus != ''">
+        rstatus,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="username != null and username != ''">
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null and password != ''">
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="department != null and department != ''">
+        #{department,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null and phone != ''">
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="position != null and position != ''">
+        #{position,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null and remark != ''">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null and email != ''">
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="ctime != null and ctime != ''">
+        #{ctime,jdbcType=BIGINT},
+      </if>
+      <if test="mtime != null and mtime != ''">
+        #{mtime,jdbcType=BIGINT},
+      </if>
+      <if test="rstatus != null and rstatus != ''">
+        #{rstatus,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPK" parameterType="com.caogen.domain.SysUser">
+    update t_sys_user
+    <set>
+      <if test="username != null and username != ''">
+        username = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null and password != ''">
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="department != null and department != ''">
+        department = #{department,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null and phone != ''">
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="position != null and position != ''">
+        position = #{position,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null and remark != ''">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null and email != ''">
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="ctime != null and ctime != ''">
+        ctime = #{ctime,jdbcType=BIGINT},
+      </if>
+      <if test="mtime != null and mtime != ''">
+        mtime = #{mtime,jdbcType=BIGINT},
+      </if>
+      <if test="rstatus != null and rstatus != ''">
+        rstatus = #{rstatus,jdbcType=TINYINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
