@@ -53,25 +53,29 @@
 	</script>
 </head>
 <body>
-<div id="loginWin" class="window" title="登录" style="width:320px;height:116px;padding:5px;left: 50%; top: 50%; margin: -86px 0 0 -160px;" minimizable="false" maximizable="false" resizable="false" collapsible="false">
+<div id="loginWin" class="window" title="登录" style="width:320px;height:160px;padding:5px;left: 50%; top: 50%; margin: -86px 0 0 -160px;" minimizable="false" maximizable="false" resizable="false" collapsible="false">
 	<div class="easyui-layout" fit="true">
 		<div region="center" border="false" style="padding:5px;background:#fff;border:1px solid #ccc;">
-			<div th:if="${param.error}">
-				Invalid username and password.
-			</div>
-			<div th:if="${param.logout}">
-				You have been logged out.
-			</div>
+			<!--<div th:if="${param.error}">-->
+				<!--Invalid username and password.-->
+			<!--</div>-->
+			<!--<div th:if="${param.logout}">-->
+				<!--You have been logged out.-->
+			<!--</div>-->
 			<form id="loginForm" method="post">
 				<div style="padding:5px 0;">
 					<label for="username">帐号:</label>
-					<input type="text" name="username" class="easyui-validatebox tb" data-options="required:true,validType:'length[1,10]'" style="width:260px; height: 20px;" />
+					<input type="text" name="username" class="easyui-validatebox" data-options="required:true,validType:'length[1,10]'" style="width:260px; height: 20px;" />
 				</div>
 				<div style="padding:5px 0;">
 					<label for="password">密码:</label>
-					<input type="password" name="password" class="easyui-validatebox tb" data-options="required:true,validType:'length[1,10]'" style="width:260px; height: 20px;" />
+					<input type="password" name="password" class="easyui-validatebox" data-options="required:true,validType:'length[1,10]'" style="width:260px; height: 20px;" />
 				</div>
-				<div style="padding:2px;text-align: center">
+				<div style="padding:5px 0 0;">
+					<label for="remember-me">记住我:</label>
+					<input type="checkbox" name="remember-me" class="easyui-validatebox" data-options="required:true,validType:'length[1,10]'" style="width:260px; height: 20px;" />
+				</div>
+				<div style="text-align: center">
 					<a style="padding:0px 15px 0px 15px;" class="easyui-linkbutton" href="javascript:void(0)" onclick="reset()">重置</a>
 					<a style="padding:0px 15px 0px 15px;" class="easyui-linkbutton" href="javascript:void(0)" onclick="login()">登录</a>
 				</div>

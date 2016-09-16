@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.caogen.dao.RememberMeMapper">
+  <resultMap id="resultMap" type="com.caogen.domain.RememberMe">
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="series" jdbcType="VARCHAR" property="series" />
+    <result column="token" jdbcType="VARCHAR" property="tokenValue" />
+    <result column="last_used" property="date" />
+  </resultMap>
+  <select id="selectByPK" parameterType="com.caogen.domain.RememberMe" resultMap="resultMap">
+    select username,series,token,last_used from persistent_logins where series = #{series}
+  </select>
+  <delete id="deleteByPK">
+    delete from persistent_logins where username = #{username}
+  </delete>
+  <insert id="insert" parameterType="com.caogen.domain.RememberMe">
+    insert into persistent_logins (username, series, token, last_used)
+    values( #{username,jdbcType=VARCHAR},
+            #{series,jdbcType=VARCHAR},
+            #{tokenValue,jdbcType=VARCHAR},
+            #{date}
+    )
+  </insert>
+  <update id="updateByPK" parameterType="com.caogen.domain.RememberMe">
+    update persistent_logins set token = #{tokenValue}, last_used = #{date} where series = #{series}
+  </update>
+</mapper>

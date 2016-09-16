@@ -1,6 +1,7 @@
 package com.caogen.config;
 
 import com.caogen.security.MyAuthenticationProvider;
+import com.caogen.security.MyPersistentTokenRepository;
 import com.caogen.security.MyUserDetailsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +14,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /**
@@ -30,8 +30,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private MyAuthenticationProvider provider;//自定义验证
+
     @Autowired
-    private UserDetailsService userDetailsService;//自定义用户服务
+    private MyUserDetailsService userDetailsService;
+
+    @Autowired
+    private MyPersistentTokenRepository persistentTokenRepository;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -54,6 +58,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .logout()
                     .logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/login")
                 .and()
+                    .rememberMe().userDetailsService(userDetailsService)
+                                    .tokenRepository(persistentTokenRepository)
+                                    .rememberMeParameter("remember-me").key("userLoginKey")
+                                    .tokenValiditySeconds(86400)
+                .and()
                     .csrf().disable(); //disable csrf
     }
 
@@ -63,4 +72,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         //将验证过程交给自定义验证工具
         auth.authenticationProvider(provider);
     }
+
 }
