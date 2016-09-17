@@ -36,7 +36,7 @@ public class HomeController  extends BaseController {
     @RequestMapping(value = {"home"}, method = RequestMethod.GET)
     public ModelAndView home(Authentication authentication) {
 
-        LOGGER.debug("[Security Context Holder]{}", SecurityContextHolder.getContext().getAuthentication().getName());
+        LOGGER.debug("[Security Context Holder]{}", SecurityContextHolder.getContext().getAuthentication());
         if(authentication != null){
             for (GrantedAuthority authority : authentication.getAuthorities()) {
                 String role = authority.getAuthority();

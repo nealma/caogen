@@ -6,6 +6,7 @@ import com.caogen.security.MyUserDetailsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -14,6 +15,9 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.authentication.RememberMeServices;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
+import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /**
@@ -35,7 +39,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private MyUserDetailsService userDetailsService;
 
     @Autowired
-    private MyPersistentTokenRepository persistentTokenRepository;
+    private MyPersistentTokenRepository tokenRepository;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -45,6 +49,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/").permitAll()//放行／请求
                 .antMatchers("/users/**").hasAuthority("neal")
+                .antMatchers("/index").hasAuthority("neal")
+                .antMatchers("/home").hasAuthority("neal")
                 .anyRequest().fullyAuthenticated()//其他url需要鉴权
                 .and()
                     .formLogin()
@@ -59,11 +65,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/login")
                 .and()
                     .rememberMe().userDetailsService(userDetailsService)
-                                    .tokenRepository(persistentTokenRepository)
-                                    .rememberMeParameter("remember-me").key("userLoginKey")
+                                    .tokenRepository(tokenRepository)
+                                    .rememberMeServices(rememberMeServices())
+                                    .rememberMeParameter("remember-me").key("key")
                                     .tokenValiditySeconds(86400)
                 .and()
-                    .csrf().disable(); //disable csrf
+                    .csrf().disable() //disable csrf
+                    .sessionManagement().maximumSessions(1).maxSessionsPreventsLogin(true);
     }
 
     @Autowired
@@ -73,4 +81,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         auth.authenticationProvider(provider);
     }
 
+    @Bean
+    public RememberMeServices rememberMeServices() {
+        // Key must be equal to rememberMe().key()
+        PersistentTokenBasedRememberMeServices rememberMeServices =
+                new PersistentTokenBasedRememberMeServices("key", userDetailsService, tokenRepository);
+        rememberMeServices.setCookieName("remember-me");
+        rememberMeServices.setParameter("remember-me");
+        rememberMeServices.setTokenValiditySeconds(864000);
+        return rememberMeServices;
+    }
 }

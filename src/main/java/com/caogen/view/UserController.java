@@ -4,6 +4,7 @@ import com.caogen.core.web.BaseController;
 import com.caogen.domain.Role;
 import com.caogen.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,6 +20,7 @@ public class UserController extends BaseController{
 
     @RequestMapping("/users/{name}")
     public String hello(@PathVariable String name){
+        LOGGER.debug("[Security Context Holder]{}", SecurityContextHolder.getContext().getAuthentication());
         Role role = new Role();
         role.setName(name);
         role.setPid(2L);

@@ -12,13 +12,6 @@ public class RememberMe{
     private  String tokenValue;
     private  Date date;
 
-//    public RememberMe(String username, String series, String tokenValue, Date date) {
-//        this.username = username;
-//        this.series = series;
-//        this.tokenValue = tokenValue;
-//        this.date = date;
-//    }
-
     public void setUsername(String username) {
         this.username = username;
     }

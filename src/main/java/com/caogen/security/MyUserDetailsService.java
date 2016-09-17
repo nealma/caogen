@@ -6,6 +6,8 @@ import com.caogen.dao.UserRoleLinkMapper;
 import com.caogen.domain.Role;
 import com.caogen.domain.SysUser;
 import com.caogen.domain.UserRoleLink;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -23,6 +25,8 @@ import java.util.List;
  */
 @Service("MyUserDetailsServiceImpl")
 public class MyUserDetailsService implements UserDetailsService {
+
+    protected final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private SysUserMapper sysUserMapper;
@@ -61,6 +65,9 @@ public class MyUserDetailsService implements UserDetailsService {
                 = new org.springframework.security.core.userdetails.User(
                 sysUser.getUsername(), sysUser.getPassword(), grantedAuthorities);
         UserDetails userDetails = securityUser;
+
+        LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>>>>>{}<<<<<<<<<<<<<<<<<<<<<<<<", userDetails.getUsername());
+
         return userDetails;
     }
 
