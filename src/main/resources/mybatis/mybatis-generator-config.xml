@@ -49,19 +49,19 @@
         </javaClientGenerator>
 
         <!--对应数据库表名 -->
-        <table tableName="t_sys_role"
-               domainObjectName="Role"
-               mapperName="RoleMapper"
-               sqlProviderName="RoleMapper"
-               enableCountByExample="false"
-               enableUpdateByExample="false"
-               enableDeleteByExample="false"
-               enableSelectByExample="false"
-               selectByExampleQueryId="false">
-            <property name="useActualColumnNames" value="false"/>
-            <property name="rootClass" value="com.caogen.core.domain.Page"/>
-            <generatedKey column="id" sqlStatement="MySql" identity="true" />
-        </table>
+        <!--<table tableName="t_sys_role"-->
+               <!--domainObjectName="Role"-->
+               <!--mapperName="RoleMapper"-->
+               <!--sqlProviderName="RoleMapper"-->
+               <!--enableCountByExample="false"-->
+               <!--enableUpdateByExample="false"-->
+               <!--enableDeleteByExample="false"-->
+               <!--enableSelectByExample="false"-->
+               <!--selectByExampleQueryId="false">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<property name="rootClass" value="com.caogen.core.domain.Page"/>-->
+            <!--<generatedKey column="id" sqlStatement="MySql" identity="true" />-->
+        <!--</table>-->
 
         <!--<table tableName="t_sys_param"-->
                <!--domainObjectName="Param"-->

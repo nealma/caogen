@@ -105,7 +105,7 @@ function showRMenu(type, x, y) {
         $("#r_updateNode").show();
     } else {
         $("#rMenu").show();
-        $("#r_addNode").hide();
+        $("#r_addNode").show();
         $("#r_deleteNode").show();
         $("#r_updateNode").show();
     }

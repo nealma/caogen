@@ -102,12 +102,12 @@ function showRMenu(type, x, y) {
 		$("#rMenu").hide();
 	} else if (type <= 1) {
 		$("#rMenu").show();
-		$("#r_deleteNode").hide();
+		$("#r_deleteNode").show();
 		$("#r_addNode").show();
 		$("#r_updateNode").show();
 	} else {
 		$("#rMenu").show();
-		$("#r_addNode").hide();
+		$("#r_addNode").show();
 		$("#r_deleteNode").show();
 		$("#r_updateNode").show();
 	}
@@ -240,8 +240,8 @@ function removeTreeNode() {
 					$.ajax({
 						"type": "DELETE",
 						"dataType": "json",
-						"url": config.delRoleUrl,
-						"data": {id: nodes[0].id},
+						"url": config.delRoleUrl+"/"+nodes[0].id,
+						"data": {},
 						async: false,
 						success: function (json) {
 							if (json.type == 'SUCCESS') {
@@ -316,7 +316,7 @@ function assignFunctionRole() {
 
 	var mids = [];
 	for(var i=0;i<nodes.length;i++){
-		if(nodes[i].isParent == false){
+		if(nodes[i].id != 0){
 			mids.push(nodes[i].id);
 		}
 	}

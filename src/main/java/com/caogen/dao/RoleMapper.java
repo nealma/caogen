@@ -15,4 +15,6 @@ public interface RoleMapper {
     long count(Role role);
 
     List<Role> select(Role role);
+
+    List<Role> selectBatch(List<Long> roleIds);
 }

@@ -6,6 +6,7 @@ import com.caogen.core.web.PromptMessage;
 import com.caogen.domain.Role;
 import com.caogen.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.PathVariable;

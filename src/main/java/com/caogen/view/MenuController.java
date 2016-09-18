@@ -4,8 +4,12 @@ import com.caogen.core.exception.AppException;
 import com.caogen.core.web.BaseController;
 import com.caogen.core.web.PromptMessage;
 import com.caogen.domain.Resource;
+import com.caogen.domain.Role;
+import com.caogen.domain.RoleResourceLink;
 import com.caogen.service.ResourceService;
+import com.caogen.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -23,14 +27,26 @@ public class MenuController extends BaseController{
     @Autowired
     private ResourceService resourceService;
 
+    @Autowired
+    private RoleService roleService;
+
     @RequestMapping(value = "/menus", method = RequestMethod.GET)
     public String list(Resource resource){
+        String authority = SecurityContextHolder.getContext().getAuthentication().getAuthorities().iterator().next().getAuthority();
         List<Resource> list;
         PromptMessage promptMessage;
         try {
-            resource.setPage(1);
-            resource.setRows(1000);
-            list = resourceService.select(resource);
+            //根据角色过滤菜单
+            Role role = new Role();
+            role.setName(authority);
+            role.setPage(1);
+            role.setRows(10);
+            List<Role> roles = roleService.select(role);
+            role = roles.size() > 0 ? roleService.select(role).get(0) : role;
+
+            list = resourceService.selectByRoleId(role.getId());
+//            resource.setRows(1000);
+//            list = resourceService.select(resource);
             promptMessage = PromptMessage.createSuccessPrompt("0000", "  加载菜单成功");
             promptMessage.setResult(list);
         } catch (AppException e){
@@ -121,10 +137,10 @@ public class MenuController extends BaseController{
         PromptMessage promptMessage;
         try {
             resourceService.grant(id, mids);
-            promptMessage = PromptMessage.createSuccessPrompt("0000", "删除菜单成功");
+            promptMessage = PromptMessage.createSuccessPrompt("0000", "授权成功");
         } catch (AppException e){
             e.printStackTrace();
-            promptMessage = PromptMessage.createErrorPrompt("0000", "删除菜单失败");
+            promptMessage = PromptMessage.createErrorPrompt("0000", "授权失败");
         }
 
         return this.renderJson(promptMessage);

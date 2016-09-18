@@ -20,7 +20,7 @@ public class Page<T> {
     /**
      * 每页记录数
      */
-    protected int rows = 2;
+    protected int rows = Integer.MAX_VALUE;
 
     /**
      * 偏移量

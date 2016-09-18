@@ -127,4 +127,11 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <select id="selectBatch" parameterType="java.util.List" resultMap="resultMap">
+    select
+    <include refid="baseColumnList" />
+    from t_sys_role
+    where ID in
+    <foreach collection="list" item="roleId" open="(" separator="," close=")">#{roleId}</foreach>
+  </select>
 </mapper>

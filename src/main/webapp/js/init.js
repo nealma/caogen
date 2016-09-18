@@ -1,5 +1,6 @@
 ﻿$(function(){
 	ctx = getHost();
+	getMenus();
 	initLeftMenu();
 	tabCloseEven();
 	loginOut();
@@ -7,78 +8,56 @@
 var ctx = '';
 var _menus = {
 	"menus": [
-		{
-			"menuid": "1", "icon": "icon-home", "menuname": "主页", "url": "home/home.html",
-			"menus": []
-		},
-		{
-			"menuid": "8", "icon": "icon-sys", "menuname": "施工组织管理",
-			"menus": [
-				{"menuid": "21", "menuname": "单元轨节管理", "icon": "icon-nav", "url": "http://baidu.com"},
-				{"menuid": "22", "menuname": "施工计划管理", "icon": "icon-nav", "url": "http://lingyi.tech"}
-			]
-		}, {
-			"menuid": "56", "icon": "icon-sys", "menuname": "查询管理",
-			"menus": [{
-				"menuid": "31",
-				"menuname": "单元轨节查询",
-				"icon": "icon-nav",
-				"url": "statistics/danyuanguijie_query.html"
-			},
-				{
-					"menuid": "32",
-					"menuname": "单元轨节锁定查询",
-					"icon": "icon-nav",
-					"url": "statistics/danyuanguijies_locked_query.html"
-				},
-				{"menuid": "32", "menuname": "规范查询", "icon": "icon-nav", "url": "statistics/zuoyezhidaoshu_query.html"},
-				{"menuid": "52", "menuname": "人员信息查询", "icon": "icon-nav", "url": "org/user.html"},
-			]
-		}, {
-			"menuid": "28", "icon": "icon-sys", "menuname": "统计分析",
-			"menus": [
-				//{"menuid":"41","menuname":"单元轨节数量统计","icon":"icon-nav","url":"statistics/locked_release_query.html"},
-				//{"menuid":"42","menuname":"锁定放散统计","icon":"icon-nav","url":"statistics/locked_release_statistics.html"},
-				//{"menuid":"43","menuname":"用户统计","icon":"icon-nav","url":"bank.html"}
-			]
-		}, {
-			"menuid": "39", "icon": "icon-sys", "menuname": "报表管理",
-			"menus": [{"menuid": "51", "menuname": "放散锁定报表", "icon": "icon-nav", "url": "report/jibenjishu_report.html"}
-			]
-		}, {
-			"menuid": "39", "icon": "icon-sys", "menuname": "日志查询",
-			"menus": [
-				{"menuid": "53", "menuname": "登陆频次", "icon": "icon-nav", "url": "logs/dlpc.html"},
-				{"menuid": "53", "menuname": "操作频次", "icon": "icon-nav", "url": "logs/czpc.html"},
-				{"menuid": "53", "menuname": "系统日志", "icon": "icon-nav", "url": "logs/xtrz.html"}
-			]
-		}, {
-			"menuid": "39", "icon": "icon-sys", "menuname": "组织机构管理",
-			"menus": [
-				{"menuid": "51", "menuname": "单位管理", "icon": "icon-nav", "url": "org/org.html"},
-				//   {"menuid":"53","menuname":"职务管理","icon":"icon-nav","url":"org/post.html"}
-			]
-		}, {
-			"menuid": "39", "icon": "icon-sys", "menuname": "基础数据管理",
-			"menus": [
-				{"menuid": "52", "menuname": "区间管理", "icon": "icon-nav", "url": "basicdata/qujianguanli.html"},
-				{"menuid": "51", "menuname": "线路管理", "icon": "icon-nav", "url": "basicdata/xianluguanli.html"},
-				{"menuid": "52", "menuname": "线路授权", "icon": "icon-nav", "url": "basicdata/xianlushouquan.html"},
-				{"menuid": "52", "menuname": "测量标准信息", "icon": "icon-nav", "url": "basicdata/celiangbiaozhun.html"}
-			]
-		},
-		{
-			"menuid": "39",
-			"icon": "icon-sys",
-			"menuname": "系统管理",
-			"menus": [
-				{"menuid": "51", "menuname": "角色管理", "icon": "icon-nav", "url": "admin/sys/role.html"},
-				{"menuid": "52", "menuname": "菜单管理", "icon": "icon-nav", "url": "admin/sys/menu.html"},
-				{"menuid": "53", "menuname": "参数管理", "icon": "icon-nav", "url": "admin/sys/param.html"}
-			]
-		}
+		// {
+		// 	"menuid": "1", "icon": "icon-home", "menuname": "主页", "url": "home/home.html",
+		// 	"menus": []
+		// },
+		// {
+		// 	"menuid": "39",
+		// 	"icon": "icon-sys",
+		// 	"menuname": "系统管理",
+		// 	"menus": [
+		// 		{"menuid": "51", "menuname": "角色管理", "icon": "icon-nav", "url": "admin/sys/role.html"},
+		// 		{"menuid": "52", "menuname": "菜单管理", "icon": "icon-nav", "url": "admin/sys/menu.html"},
+		// 		{"menuid": "53", "menuname": "参数管理", "icon": "icon-nav", "url": "admin/sys/param.html"}
+		// 	]
+		// }
 	]
 };
+//获取左侧功能菜单
+function getMenus() {
+	$.ajax({
+		url: "../menus",
+		dataType: "json",
+		async: false,
+		success: function (result) {
+			var menus = result.result;
+			if(menus && menus.length > 0){
+				var parent_menus = [];
+				menus.forEach(function(t, i){
+					if(t.pid == 0){
+						parent_menus.push(t);
+					}
+				});
+				var child_menus = [];
+				parent_menus.forEach(function(t, i){
+					menus.forEach(function(a, j){
+						if(t.id == a.pid){
+							child_menus.push(a);
+						}
+					});
+					t.menus = child_menus;
+				});
+				_menus.menus = JSON.parse(JSON.stringify(parent_menus).replace(/id/g,"menuid").replace(/name/g, "menuname").replace(/link/g, "url"));
+			}
+			_menus.menus.unshift({
+					"menuid": "1", "icon": "icon-home", "menuname": "主页", "url": "home",
+					"menus": []
+				});
+		}
+	});
+}
+
 //初始化左侧
 function initLeftMenu() {
 		$("#nav").accordion({animate:false});
@@ -114,7 +93,7 @@ function initLeftMenu() {
 			if(n.icon === 'icon-home'){
 				$('#tabs').tabs('add',{
 					title:'主页',
-					content:createFrame('home/home.html')
+					content:createFrame('home')
 				});
 			}
 

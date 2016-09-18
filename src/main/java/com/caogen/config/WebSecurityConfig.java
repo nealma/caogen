@@ -1,5 +1,6 @@
 package com.caogen.config;
 
+import com.caogen.security.MyAccessDecisionManager;
 import com.caogen.security.MyAuthenticationProvider;
 import com.caogen.security.MyPersistentTokenRepository;
 import com.caogen.security.MyUserDetailsService;
@@ -17,7 +18,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
-import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /**
@@ -41,17 +41,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private MyPersistentTokenRepository tokenRepository;
 
+    @Autowired
+    private MyAccessDecisionManager accessDecisionManager;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>>>>>{}<<<<<<<<<<<<<<<<<<<<<<<<", "configure");
         http.
                 headers().frameOptions().sameOrigin().disable()//disable X-Frame-Options
-                .authorizeRequests()
-                .antMatchers("/").permitAll()//放行／请求
-                .antMatchers("/users/**").hasAuthority("neal")
-                .antMatchers("/index").hasAuthority("neal")
-                .antMatchers("/home").hasAuthority("neal")
-                .anyRequest().fullyAuthenticated()//其他url需要鉴权
+                    .authorizeRequests()
+                    .accessDecisionManager(accessDecisionManager)
+                    .anyRequest().fullyAuthenticated()//其他url需要鉴权
                 .and()
                     .formLogin()
                     .usernameParameter("username")
@@ -61,7 +61,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .failureUrl("/login?error")
                     .permitAll()
                 .and()
-                    .logout()
+                    .logout().deleteCookies("JSESSIONID")
                     .logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/login")
                 .and()
                     .rememberMe().userDetailsService(userDetailsService)
@@ -71,7 +71,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                                     .tokenValiditySeconds(86400)
                 .and()
                     .csrf().disable() //disable csrf
-                    .sessionManagement().maximumSessions(1).maxSessionsPreventsLogin(true);
+                    .sessionManagement().maximumSessions(1);
     }
 
     @Autowired
@@ -83,6 +83,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public RememberMeServices rememberMeServices() {
+        LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>>>>>{}<<<<<<<<<<<<<<<<<<<<<<<<", "rememberMeServices");
         // Key must be equal to rememberMe().key()
         PersistentTokenBasedRememberMeServices rememberMeServices =
                 new PersistentTokenBasedRememberMeServices("key", userDetailsService, tokenRepository);
