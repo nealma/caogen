@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 
 /**
- * 权限控制
+ * 验证资源跟角色之间的关系
  * Created by neal on 9/18/16.
  */
 @Component
@@ -31,10 +31,23 @@ public class MyAccessDecisionManager implements AccessDecisionManager {
     @Autowired
     private RoleService roleService;
 
+    /**
+     * // authentication 为用户所被赋予的权限, configAttributes 为访问相应的资源应该具有的权限。
+     * @param authentication
+     * @param object
+     * @param configAttributes
+     * @throws AccessDeniedException
+     * @throws InsufficientAuthenticationException
+     */
     @Override
     public void decide(Authentication authentication, Object object, Collection<ConfigAttribute> configAttributes)
             throws AccessDeniedException, InsufficientAuthenticationException {
-        LOGGER.info("1 authentication={}", authentication.getAuthorities());
+        LOGGER.info("CurrentUser authorities = {}", authentication.getAuthorities());
+
+        //放行[超级管理员]角色
+        if(authentication.getAuthorities().contains("超级管理员")){
+            return;
+        }
 
         Collection<GrantedAuthority> uriHasRoles = getGrantedAuthoritys(object);
         if (uriHasRoles == null || uriHasRoles.size() == 0) {
@@ -42,31 +55,35 @@ public class MyAccessDecisionManager implements AccessDecisionManager {
         }
         Collection<GrantedAuthority> userHasRoles =
                 (Collection<GrantedAuthority>) authentication.getAuthorities();
-        if (userHasRoles != null && userHasRoles.size() > 0) {
 
-            try{
-                userHasRoles.forEach(userHasRole -> {
+        Optional<Collection<GrantedAuthority>> grantedAuthoritiesForOptional =
+                Optional.ofNullable(userHasRoles);
+
+        try{
+            grantedAuthoritiesForOptional.ifPresent(userHasRolesNotNull -> {
+                userHasRolesNotNull.forEach(userHasRole -> {
                     uriHasRoles.forEach(uriHasRole -> {
                         LOGGER.info("userHasRole={}, uriHasRole={}", userHasRole, uriHasRole);
                         if (userHasRole.getAuthority().equals(uriHasRole.getAuthority())) {
-                            LOGGER.info("3 authentication={}", authentication.getAuthorities());
                             throw new AppException("break");
                         }
                     });
                 });
-            }catch(AppException be){
-                return;
-            }
-
+            });
+        }catch(AppException be){
+            return;
         }
-        LOGGER.info("2 authentication={}", authentication.getAuthorities());
+
         throw new AccessDeniedException("Access Denied.");
     }
 
     private Collection<GrantedAuthority> getGrantedAuthoritys(Object object) {
         FilterInvocation filterInvocation = (FilterInvocation) object;
-        List<Role> uriHasRoles = roleService.selectByResourceURI(
-                new StringBuilder(filterInvocation.getRequestUrl()).deleteCharAt(0).toString());
+        String uri = new StringBuilder(filterInvocation.getRequestUrl()).deleteCharAt(0).toString();
+        if("".equals(uri)){
+            return null;
+        }
+        List<Role> uriHasRoles = roleService.selectByResourceURI(uri);
         LOGGER.info("fullRequestUrl={}, requestUrl={}, uriHasRoles={}",
                 filterInvocation.getFullRequestUrl(),
                 filterInvocation.getRequestUrl(),

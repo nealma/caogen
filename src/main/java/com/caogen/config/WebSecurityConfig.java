@@ -33,7 +33,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    private MyAuthenticationProvider provider;//自定义验证
+    private MyAuthenticationProvider authenticationProvider;//自定义验证
 
     @Autowired
     private MyUserDetailsService userDetailsService;
@@ -45,45 +45,45 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private MyAccessDecisionManager accessDecisionManager;
 
     @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.authenticationProvider(authenticationProvider);
+        auth.userDetailsService(userDetailsService);
+    }
+
+    @Override
     protected void configure(HttpSecurity http) throws Exception {
-        LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>>>>>{}<<<<<<<<<<<<<<<<<<<<<<<<", "configure");
-        http.
-                headers().frameOptions().sameOrigin().disable()//disable X-Frame-Options
-                    .authorizeRequests()
+        http
+                .headers()
+                    .frameOptions().sameOrigin().disable()//disable X-Frame-Options
+                .authorizeRequests()
                     .accessDecisionManager(accessDecisionManager)
                     .anyRequest().fullyAuthenticated()//其他url需要鉴权
                 .and()
                     .formLogin()
-                    .usernameParameter("username")
-                    .passwordParameter("password")
-                    .loginProcessingUrl("/login")
-                    .loginPage("/login")
-                    .failureUrl("/login?error")
-                    .permitAll()
+                        .usernameParameter("username")
+                        .passwordParameter("password")
+                        .loginProcessingUrl("/login")
+                        .loginPage("/login")
+                        .failureUrl("/login?error")
+                        .permitAll()
                 .and()
-                    .logout().deleteCookies("JSESSIONID")
-                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/login")
+                    .logout()
+                        .deleteCookies("JSESSIONID")
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                        .logoutSuccessUrl("/login")
                 .and()
-                    .rememberMe().userDetailsService(userDetailsService)
-                                    .tokenRepository(tokenRepository)
-                                    .rememberMeServices(rememberMeServices())
-                                    .rememberMeParameter("remember-me").key("key")
-                                    .tokenValiditySeconds(86400)
+                    .rememberMe()
+                        .tokenRepository(tokenRepository)
+                        .rememberMeServices(rememberMeServices())
+                        .rememberMeParameter("remember-me").key("key")
+                        .tokenValiditySeconds(86400)
                 .and()
                     .csrf().disable() //disable csrf
                     .sessionManagement().maximumSessions(1);
     }
 
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>>>>>{}<<<<<<<<<<<<<<<<<<<<<<<<", "configureGlobal");
-        //将验证过程交给自定义验证工具
-        auth.authenticationProvider(provider);
-    }
-
     @Bean
     public RememberMeServices rememberMeServices() {
-        LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>>>>>{}<<<<<<<<<<<<<<<<<<<<<<<<", "rememberMeServices");
         // Key must be equal to rememberMe().key()
         PersistentTokenBasedRememberMeServices rememberMeServices =
                 new PersistentTokenBasedRememberMeServices("key", userDetailsService, tokenRepository);

@@ -32,6 +32,7 @@ function getMenus() {
 		async: false,
 		success: function (result) {
 			var menus = result.result;
+			$("#username").text(result.error.username);
 			if(menus && menus.length > 0){
 				var parent_menus = [];
 				menus.forEach(function(t, i){

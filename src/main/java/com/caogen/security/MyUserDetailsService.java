@@ -11,16 +11,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
- * 自定义查询用户信息
+ * SPRING SECURITY用户登录处理
  * Created by neal on 9/14/16.
  */
 @Service("MyUserDetailsServiceImpl")
@@ -36,11 +36,12 @@ public class MyUserDetailsService implements UserDetailsService {
     private UserRoleLinkMapper userRoleLinkMapper;
 
     @Override
-    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+        LOGGER.info("loadUserByUsername --> [{}]", username);
+
         SysUser sysUser = new SysUser();
-        sysUser.setUsername(s);
-        sysUser.setRows(1);
-        sysUser.setPage(1);
+        sysUser.setUsername(username);
         List<SysUser> userList = sysUserMapper.select(sysUser);
         if (userList == null || userList.size() == 0) {
             throw new UsernameNotFoundException("username not found.");
@@ -48,27 +49,19 @@ public class MyUserDetailsService implements UserDetailsService {
         sysUser = userList.get(0);
         UserRoleLink userRoleLink = new UserRoleLink();
         userRoleLink.setUserId(sysUser.getId());
-        userRoleLink.setPage(1);
-        userRoleLink.setRows(Integer.MAX_VALUE);
 
         List<UserRoleLink> userRoleLinks = userRoleLinkMapper.select(userRoleLink);
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-        if (userRoleLinks != null && userRoleLinks.size() > 0) {
-            userRoleLinks.forEach(userRoleLink1 -> {
+
+        Optional<List<UserRoleLink>> userRoleLinksOptional = Optional.of(userRoleLinks);
+        userRoleLinksOptional.ifPresent(userRoleLinks1 -> {
+            userRoleLinks1.forEach(userRoleLink1 -> {
                 Role role = roleMapper.selectByPK(userRoleLink1.getRoleId());
                 GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(role.getName());
                 grantedAuthorities.add(grantedAuthority);
             });
-        }
-
-        org.springframework.security.core.userdetails.User securityUser
-                = new org.springframework.security.core.userdetails.User(
-                sysUser.getUsername(), sysUser.getPassword(), grantedAuthorities);
-        UserDetails userDetails = securityUser;
-
-        LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>>>>>{}<<<<<<<<<<<<<<<<<<<<<<<<", userDetails.getUsername());
-
-        return userDetails;
+        });
+        return new User(username, sysUser.getPassword(), true, true, true, true, grantedAuthorities);
     }
 
 }
