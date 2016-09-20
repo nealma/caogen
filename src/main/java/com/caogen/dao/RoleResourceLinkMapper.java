@@ -17,4 +17,6 @@ public interface RoleResourceLinkMapper {
     List<RoleResourceLink> select(RoleResourceLink roleResourceLink);
 
     int deleteByRoleId(Long roleId);
+
+    List<RoleResourceLink> selectBatch(List<Long> roleId);
 }

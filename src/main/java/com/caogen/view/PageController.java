@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 /**
@@ -25,6 +27,7 @@ public class PageController extends BaseController {
      * @return
      */
     @RequestMapping(value = {"", "/", "/login"}, method = RequestMethod.GET)
+    @PermitAll
     public ModelAndView login() {
         LOGGER.info("|--> {}", this.getRequest().getRequestURI());
         return new ModelAndView("login");
@@ -35,6 +38,7 @@ public class PageController extends BaseController {
      * @return
      */
     @RequestMapping(value = "index", method = RequestMethod.GET)
+    @PermitAll
     public ModelAndView index() {
         LOGGER.info("|--> {}", this.getRequest().getRequestURI());
         return new ModelAndView("index");
@@ -46,6 +50,7 @@ public class PageController extends BaseController {
      * @return
      */
     @RequestMapping(value = "home", method = RequestMethod.GET)
+    @PermitAll
     public ModelAndView home() {
         LOGGER.info("|--> {}", this.getRequest().getRequestURI());
         return new ModelAndView("home/home");
@@ -58,6 +63,7 @@ public class PageController extends BaseController {
      * @return
      */
     @RequestMapping(value = "role", method = RequestMethod.GET)
+    @RolesAllowed({"ROLE_role", "ROLE_root"})
     public ModelAndView role() {
         LOGGER.info("|--> {}", this.getRequest().getRequestURI());
         return new ModelAndView("sys/role");
@@ -68,6 +74,7 @@ public class PageController extends BaseController {
      * @return
      */
     @RequestMapping(value = "menu", method = RequestMethod.GET)
+    @RolesAllowed({"ROLE_menu", "ROLE_root"})
     public ModelAndView menu() {
         LOGGER.info("|--> {}", this.getRequest().getRequestURI());
         return new ModelAndView("sys/menu");
@@ -78,6 +85,7 @@ public class PageController extends BaseController {
      * @return
      */
     @RequestMapping(value = "param", method = RequestMethod.GET)
+    @RolesAllowed({"ROLE_param", "ROLE_root"})
     public ModelAndView param() {
         LOGGER.info("|--> {}", this.getRequest().getRequestURI());
         return new ModelAndView("sys/param");

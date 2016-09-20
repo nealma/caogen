@@ -3,7 +3,6 @@ package com.caogen.security;
 import com.caogen.core.exception.AppException;
 import com.caogen.domain.Role;
 import com.caogen.service.RoleService;
-import com.mysql.jdbc.log.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,19 +41,26 @@ public class MyAccessDecisionManager implements AccessDecisionManager {
     @Override
     public void decide(Authentication authentication, Object object, Collection<ConfigAttribute> configAttributes)
             throws AccessDeniedException, InsufficientAuthenticationException {
-        LOGGER.info("CurrentUser authorities = {}", authentication.getAuthorities());
+
+        Collection<GrantedAuthority> userHasRoles =
+                (Collection<GrantedAuthority>) authentication.getAuthorities();
+
+        LOGGER.info("CurrentUser={} CurrentHasRoles = {}", authentication.getName(), Arrays.asList(userHasRoles));
 
         //放行[超级管理员]角色
-        if(authentication.getAuthorities().contains("超级管理员")){
-            return;
+        Iterator<GrantedAuthority> iterator = userHasRoles.iterator();
+        while (iterator.hasNext()){
+            GrantedAuthority grantedAuthority = iterator.next();
+            if("系统管理员".equals(grantedAuthority.getAuthority())){
+                return;
+            }
         }
+        LOGGER.info("1 CurrentUser={} CurrentHasRoles = {}", authentication.getName(), Arrays.asList(userHasRoles));
 
         Collection<GrantedAuthority> uriHasRoles = getGrantedAuthoritys(object);
         if (uriHasRoles == null || uriHasRoles.size() == 0) {
             return;
         }
-        Collection<GrantedAuthority> userHasRoles =
-                (Collection<GrantedAuthority>) authentication.getAuthorities();
 
         Optional<Collection<GrantedAuthority>> grantedAuthoritiesForOptional =
                 Optional.ofNullable(userHasRoles);

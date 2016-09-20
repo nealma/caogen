@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,12 +29,11 @@ public class RoleController extends BaseController{
     private RoleService roleService;
 
     @RequestMapping(value = "/roles", method = RequestMethod.GET)
+    @RolesAllowed({"ROLE_roles:view", "ROLE_root"})
     public String list(Role role){
         List<Role> list;
         PromptMessage promptMessage;
         try {
-            role.setPage(1);
-            role.setRows(1000);
             list = roleService.select(role);
             promptMessage = PromptMessage.createSuccessPrompt("0000", "  加载菜单成功");
             promptMessage.setResult(list);

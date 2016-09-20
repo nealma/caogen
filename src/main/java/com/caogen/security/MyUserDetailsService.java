@@ -3,9 +3,10 @@ package com.caogen.security;
 import com.caogen.dao.RoleMapper;
 import com.caogen.dao.SysUserMapper;
 import com.caogen.dao.UserRoleLinkMapper;
-import com.caogen.domain.Role;
+import com.caogen.domain.Resource;
 import com.caogen.domain.SysUser;
 import com.caogen.domain.UserRoleLink;
+import com.caogen.service.ResourceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * SPRING SECURITY用户登录处理
@@ -35,6 +38,8 @@ public class MyUserDetailsService implements UserDetailsService {
     @Autowired
     private UserRoleLinkMapper userRoleLinkMapper;
 
+    @Autowired
+    private ResourceService resourceService;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
@@ -53,14 +58,31 @@ public class MyUserDetailsService implements UserDetailsService {
         List<UserRoleLink> userRoleLinks = userRoleLinkMapper.select(userRoleLink);
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
 
-        Optional<List<UserRoleLink>> userRoleLinksOptional = Optional.of(userRoleLinks);
+        List<Long> roleIds = new ArrayList<>();
+
+        Optional<List<UserRoleLink>> userRoleLinksOptional = Optional.ofNullable(userRoleLinks);
         userRoleLinksOptional.ifPresent(userRoleLinks1 -> {
             userRoleLinks1.forEach(userRoleLink1 -> {
-                Role role = roleMapper.selectByPK(userRoleLink1.getRoleId());
-                GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(role.getName());
-                grantedAuthorities.add(grantedAuthority);
+                roleIds.add(userRoleLink1.getRoleId());
+                if(userRoleLink1.getRoleId() == 1L){
+                    GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("ROLE_root");//root角色特权
+                    grantedAuthorities.add(grantedAuthority);
+                }
             });
         });
+
+
+//        List<Role> roles = roleMapper.selectBatch(roleIds);//V1.0
+        List<Resource> resources = resourceService.selectByRoleId(roleIds.toArray(new Long[0]));
+
+        if(resources != null && resources.size() > 0){
+            resources.forEach(resource -> {
+                GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("ROLE_"+resource.getLink());//必须ROLE_为前缀
+                grantedAuthorities.add(grantedAuthority);
+            });
+        }
+
+        LOGGER.info("grantedAuthorities --> {}", grantedAuthorities);
         return new User(username, sysUser.getPassword(), true, true, true, true, grantedAuthorities);
     }
 

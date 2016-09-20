@@ -353,7 +353,7 @@ function listFunctionRole() {
 			if(json && json.result && json.result.length > 0){
 				for( var i =0; i < json.result.length; i ++ ) {
 					var n1= zTreeMenu.getNodeByParam("id", json.result[i].id);
-					zTreeMenu.checkNode(n1, true, true);
+					zTreeMenu.checkNode(n1, true, false);
 				}
 			}
 		}

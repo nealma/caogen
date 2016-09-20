@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -26,7 +27,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @Configuration
 @ComponentScan("com.caogen")
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true, jsr250Enabled = true)
 @PropertySource("classpath:application.properties")
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -56,7 +57,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .headers()
                     .frameOptions().sameOrigin().disable()//disable X-Frame-Options
                 .authorizeRequests()
-                    .accessDecisionManager(accessDecisionManager)
+//                    .accessDecisionManager(accessDecisionManager)//用注解替换
                     .anyRequest().fullyAuthenticated()//其他url需要鉴权
                 .and()
                     .formLogin()
@@ -92,4 +93,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         rememberMeServices.setTokenValiditySeconds(864000);
         return rememberMeServices;
     }
+
 }

@@ -47,15 +47,12 @@ public class ResourceService implements BaseService<Resource>{
         return resourceMapper.select(resource);
     }
 
-    public List<Resource> selectByRoleId(Long roleId){
-        if(roleId == null || roleId == 0){
+    public List<Resource> selectByRoleId(Long... roleId){
+        if(roleId == null || roleId.length == 0){
             return  null;
         }
-        RoleResourceLink roleResourceLink = new RoleResourceLink();
-        roleResourceLink.setPage(1);
-        roleResourceLink.setRoleId(roleId);
-        roleResourceLink.setRows(1000);
-        List<RoleResourceLink> roleResourceLinks = roleResourceLinkMapper.select(roleResourceLink);
+
+        List<RoleResourceLink> roleResourceLinks = roleResourceLinkMapper.selectBatch(Arrays.asList(roleId));
 
         if(roleResourceLinks == null || roleResourceLinks.size() == 0){
             return null;
@@ -67,7 +64,12 @@ public class ResourceService implements BaseService<Resource>{
         });
         return resourceMapper.selectBatch(resourceIds);
     }
-
+    public List<Resource> selectByResourceLink(String... resourceLink) {
+        if (resourceLink == null || resourceLink.length == 0) {
+            return null;
+        }
+        return resourceMapper.selectBatchByLink(Arrays.asList(resourceLink));
+    }
     public void grant(Long roleId, String menuIds){
 
         if (menuIds == null){

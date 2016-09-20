@@ -18,4 +18,6 @@ public interface ResourceMapper {
     List<Resource> select(Resource resource);
 
     List<Resource> selectBatch(List<Long> resourceIds);
+
+    List<Resource> selectBatchByLink(List<String> links);
 }

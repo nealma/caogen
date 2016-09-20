@@ -5,26 +5,28 @@ import com.caogen.core.web.BaseController;
 import com.caogen.core.web.PromptMessage;
 import com.caogen.domain.Resource;
 import com.caogen.domain.Role;
-import com.caogen.domain.RoleResourceLink;
 import com.caogen.service.ResourceService;
 import com.caogen.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import java.util.*;
-
-import static com.sun.org.apache.xml.internal.security.keys.keyresolver.KeyResolver.iterator;
 
 /**
  * 菜单相关
  */
 @RestController
-public class MenuController extends BaseController{
+public class MenuController extends BaseController {
 
     @Autowired
     private ResourceService resourceService;
@@ -33,31 +35,31 @@ public class MenuController extends BaseController{
     private RoleService roleService;
 
     @RequestMapping(value = "/menus", method = RequestMethod.GET)
-    public String list(Resource resource){
+    @RolesAllowed({"ROLE_menus:view", "ROLE_root"})
+    public String list(Resource resource) {
 
         List<Resource> list;
         PromptMessage promptMessage;
         try {
             Collection<GrantedAuthority> grantedAuthorities
-                    = (Collection<GrantedAuthority>) SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+                    = (Collection<GrantedAuthority>) SecurityContextHolder.getContext()
+                                                            .getAuthentication().getAuthorities();
 
-            if(grantedAuthorities == null || grantedAuthorities.size() == 0){
+            if (grantedAuthorities == null || grantedAuthorities.size() == 0) {
                 throw new AppException("User has no any role.");
             }
 
-            String authority = grantedAuthorities.iterator().next().getAuthority();
-            //根据角色过滤菜单
-            Role role = new Role();
-            role.setName(authority);
-            List<Role> roles = roleService.select(role);
-            role = roles.size() > 0 ? roles.get(0) : role;
-
-            list = resourceService.selectByRoleId(role.getId());
+            LOGGER.error("{} \n{}", grantedAuthorities, SecurityContextHolder.getContext().getAuthentication().getDetails());
+            List<String> grant = new ArrayList<>();
+            grantedAuthorities.forEach(grantedAuthority -> {
+                grant.add(grantedAuthority.getAuthority().replace("ROLE_",""));
+            });
+            list = resourceService.selectByResourceLink(grant.toArray(new String[0]));
             promptMessage = PromptMessage.createSuccessPrompt("0000", "  加载菜单成功");
             promptMessage.setResult(list);
-        } catch (AppException e){
+        } catch (AppException e) {
             promptMessage = PromptMessage.createErrorPrompt("0000", "加载菜单失败");
-            LOGGER.error("[MSG] -> ", e.getMessage());
+            LOGGER.error("[MSG] -> {}", e.getMessage());
         }
         Map<String, String> error = new HashMap<>();
         error.put("username", SecurityContextHolder.getContext().getAuthentication().getName());
@@ -66,7 +68,8 @@ public class MenuController extends BaseController{
     }
 
     @RequestMapping(value = "/menus", method = RequestMethod.POST)
-    public String create(Resource resource){
+    @RolesAllowed({"ROLE_menus:create", "ROLE_root"})
+    public String create(Resource resource) {
         PromptMessage promptMessage;
         try {
             List<Resource> list = new ArrayList<>();
@@ -75,7 +78,7 @@ public class MenuController extends BaseController{
             promptMessage = PromptMessage.createSuccessPrompt("0000", "添加菜单成功");
             list.add(resource);
             promptMessage.setResult(list);
-        } catch (AppException e){
+        } catch (AppException e) {
             e.printStackTrace();
             promptMessage = PromptMessage.createErrorPrompt("0000", "添加菜单失败");
         }
@@ -84,15 +87,16 @@ public class MenuController extends BaseController{
     }
 
     @RequestMapping(value = "/menus", method = RequestMethod.PUT)
-    public String update(@Valid Resource resource, BindingResult bindingResult){
+    @RolesAllowed({"ROLE_menus:update", "ROLE_root"})
+    public String update(@Valid Resource resource, BindingResult bindingResult) {
         PromptMessage promptMessage;
         try {
-            if(bindingResult.hasErrors()){
+            if (bindingResult.hasErrors()) {
                 promptMessage = PromptMessage.createErrorPrompt("0000", "更新菜单失败xxxxx");
                 List<FieldError> fieldErrors = bindingResult.getFieldErrors();
                 for (FieldError field : fieldErrors) {
 
-                    LOGGER.debug("{}={}",field.getField(), field.getDefaultMessage());
+                    LOGGER.debug("{}={}", field.getField(), field.getDefaultMessage());
 
                 }
                 return this.renderJson(promptMessage);
@@ -102,21 +106,21 @@ public class MenuController extends BaseController{
             promptMessage = PromptMessage.createSuccessPrompt("0000", "更新菜单成功");
             list.add(resource);
             promptMessage.setResult(list);
-        } catch (AppException e){
+        } catch (AppException e) {
             e.printStackTrace();
             promptMessage = PromptMessage.createErrorPrompt("0000", "更新菜单失败");
         }
 
         return this.renderJson(promptMessage);
     }
-
+    @RolesAllowed({"ROLE_menus:delete", "ROLE_root"})
     @RequestMapping(value = "/menus/{id}", method = RequestMethod.DELETE)
-    public String delete(@PathVariable("id") Long id){
+    public String delete(@PathVariable("id") Long id) {
         PromptMessage promptMessage;
         try {
             resourceService.delete(id);
             promptMessage = PromptMessage.createSuccessPrompt("0000", "删除菜单成功");
-        } catch (AppException e){
+        } catch (AppException e) {
             e.printStackTrace();
             promptMessage = PromptMessage.createErrorPrompt("0000", "删除菜单失败");
         }
@@ -125,14 +129,15 @@ public class MenuController extends BaseController{
     }
 
     @RequestMapping(value = "/menus/{roleId}", method = RequestMethod.GET)
-    public String getMenuByRoleId(@PathVariable("roleId") Long id){
+    @RolesAllowed({"ROLE_menus:view", "ROLE_root"})
+    public String getMenuByRoleId(@PathVariable("roleId") Long id) {
         List<Resource> list;
         PromptMessage promptMessage;
         try {
             list = resourceService.selectByRoleId(id);
             promptMessage = PromptMessage.createSuccessPrompt("0000", "  加载菜单成功");
             promptMessage.setResult(list);
-        } catch (AppException e){
+        } catch (AppException e) {
             e.printStackTrace();
             promptMessage = PromptMessage.createErrorPrompt("0000", "加载菜单失败");
         }
@@ -141,12 +146,13 @@ public class MenuController extends BaseController{
     }
 
     @RequestMapping(value = "/menus/grant")
-    public String delete(Long id, String mids){
+    @RolesAllowed({"ROLE_menus:grant", "ROLE_root"})
+    public String grant(Long id, String mids) {
         PromptMessage promptMessage;
         try {
             resourceService.grant(id, mids);
             promptMessage = PromptMessage.createSuccessPrompt("0000", "授权成功");
-        } catch (AppException e){
+        } catch (AppException e) {
             e.printStackTrace();
             promptMessage = PromptMessage.createErrorPrompt("0000", "授权失败");
         }

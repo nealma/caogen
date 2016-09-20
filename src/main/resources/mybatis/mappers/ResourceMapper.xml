@@ -160,4 +160,11 @@
     where ID in
     <foreach collection="list" item="resourceId" open="(" separator="," close=")">#{resourceId}</foreach>
   </select>
+  <select id="selectBatchByLink" parameterType="java.util.List" resultMap="resultMap">
+    select
+    <include refid="baseColumnList" />
+    from t_sys_resource
+    where link in
+    <foreach collection="list" item="link" open="(" separator="," close=")">#{link}</foreach>
+  </select>
 </mapper>

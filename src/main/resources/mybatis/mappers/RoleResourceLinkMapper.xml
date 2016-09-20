@@ -132,4 +132,11 @@
     delete from t_sys_role_resource_link
     where role_id = #{roleId,jdbcType=BIGINT}
   </delete>
+  <select id="selectBatch" parameterType="java.util.List" resultMap="resultMap">
+    select
+    <include refid="baseColumnList" />
+    from t_sys_role_resource_link
+    where role_id in
+    <foreach collection="list" item="roleId" open="(" separator="," close=")">#{roleId}</foreach>
+  </select>
 </mapper>
