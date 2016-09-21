@@ -1,5 +1,6 @@
 package com.caogen.domain;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.caogen.core.domain.Page;
 
 import java.util.List;
@@ -18,6 +19,7 @@ public class SysUser extends Page {
     /**
      *  密码,所属表字段为t_sys_user.password
      */
+    @JSONField(serialize = false)
     private String password;
 
     /**

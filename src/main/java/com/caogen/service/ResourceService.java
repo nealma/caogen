@@ -68,6 +68,11 @@ public class ResourceService implements BaseService<Resource>{
         if (resourceLink == null || resourceLink.length == 0) {
             return null;
         }
+        for (String rl : resourceLink) {
+            if("root".equals(rl)){
+                return resourceMapper.select(new Resource());
+            }
+        }
         return resourceMapper.selectBatchByLink(Arrays.asList(resourceLink));
     }
     public void grant(Long roleId, String menuIds){

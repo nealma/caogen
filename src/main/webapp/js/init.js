@@ -31,8 +31,8 @@ function getMenus() {
 		dataType: "json",
 		async: false,
 		success: function (result) {
-			var menus = result.result;
-			$("#username").text(result.error.username);
+			var menus = result.data;
+			$("#username").text(result.error);
 			if(menus && menus.length > 0){
 				var parent_menus = [];
 				menus.forEach(function(t, i){

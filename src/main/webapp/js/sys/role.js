@@ -52,9 +52,10 @@ $(document).ready(function () {
 function getTree() {
 	$.ajax({
 		url: config.initDepartmentRoleUrl,
+		type: "get",
 		dataType: "json",
 		success: function (result) {
-			zNodes = result.result;
+			zNodes = result.data;
 			var node = {};
 			node.link = '-1';
 			node.name = '主页';
@@ -153,12 +154,12 @@ function saveMenu(){
 			async: false,
 			success: function(json){
 				if (json.type == 'SUCCESS') {
-					$.messager.alert(json.title, json.text,'info');
+					$.messager.alert(json.title, json.msg,'info');
 					var treeNode = zTree.getSelectedNodes()[0];
 					treeNode.name = params.name;
 					zTree.updateNode(treeNode);
 				}else{
-					$.messager.alert(json.title, json.text,'error');
+					$.messager.alert(json.title, json.msg,'error');
 				}
 			},
 			error : function() {
@@ -183,10 +184,10 @@ function beforeRename(treeId, treeNode, newName){
 				async: false,
 				success: function (json) {
 					if (json.type == 'SUCCESS') {
-						treeNode.id = json.result[0].id;
+						treeNode.id = json.data[0].id;
 						zTree.updateNode(treeNode)
 						addStatus = false;
-						$.messager.alert(json.title, json.text,'info');
+						$.messager.alert(json.title, json.msg,'info');
 					}
 				},
 				error: function () {
@@ -203,7 +204,7 @@ function beforeRename(treeId, treeNode, newName){
 				async: false,
 				success: function (json) {
 					if (json.type == 'SUCCESS') {
-						// $.messager.alert(json.title, json.text,'info');
+						// $.messager.alert(json.title, json.msg,'info');
 					}
 				},
 				error: function () {
@@ -246,7 +247,7 @@ function removeTreeNode() {
 						success: function (json) {
 							if (json.type == 'SUCCESS') {
 								zTree.removeNode(nodes[0]);
-								$.messager.alert(json.title, json.text,'info');
+								$.messager.alert(json.title, json.msg,'info');
 							}
 						},
 						error: function () {
@@ -330,7 +331,7 @@ function assignFunctionRole() {
 		data: {id: id, mids: mids.join(',')},
 		success: function (json) {
 			if (json.type == 'SUCCESS') {
-				$.messager.alert(json.title, json.text,'info');
+				$.messager.alert(json.title, json.msg,'info');
 			}
 		}
 	});
@@ -350,9 +351,9 @@ function listFunctionRole() {
 		data: {},
         type: "GET",
 		success: function (json) {
-			if(json && json.result && json.result.length > 0){
-				for( var i =0; i < json.result.length; i ++ ) {
-					var n1= zTreeMenu.getNodeByParam("id", json.result[i].id);
+			if(json && json.data && json.data.length > 0){
+				for( var i =0; i < json.data.length; i ++ ) {
+					var n1= zTreeMenu.getNodeByParam("id", json.data[i].id);
 					zTreeMenu.checkNode(n1, true, false);
 				}
 			}
@@ -379,7 +380,7 @@ function getMenuTree() {
 		url: config.initMenuUrl,
 		dataType: "json",
 		success: function (result) {
-			zNodesMenu = result.result;
+			zNodesMenu = result.data;
 			var node = {};
 			node.link = '-1';
 			node.name = '主页';

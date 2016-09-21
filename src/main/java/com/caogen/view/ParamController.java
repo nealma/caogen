@@ -1,9 +1,8 @@
 package com.caogen.view;
 
-import com.caogen.core.domain.Page;
 import com.caogen.core.exception.AppException;
 import com.caogen.core.web.BaseController;
-import com.caogen.core.web.PromptMessage;
+import com.caogen.core.web.MsgOut;
 import com.caogen.domain.Param;
 import com.caogen.service.ParamService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +28,7 @@ public class ParamController extends BaseController{
     private ParamService paramService;
 
     @RequestMapping(value = "/params", method = RequestMethod.GET)
+    @RolesAllowed({"ROLE_params:view", "ROLE_root"})
     public String list(Param param){
         LOGGER.debug("page={}, rows={}", param.getPage(), param.getRows());
         try {
@@ -35,65 +36,63 @@ public class ParamController extends BaseController{
         } catch (AppException e){
             e.printStackTrace();
         }
-
         return this.renderPageJson(param);
     }
 
     @RequestMapping(value = "/params", method = RequestMethod.POST)
+    @RolesAllowed({"ROLE_params:create", "ROLE_root"})
     public String create(Param param){
-        PromptMessage promptMessage;
+        MsgOut o;
         try {
             List<Param> list = new ArrayList<>();
             paramService.insert(param);
-            promptMessage = PromptMessage.createSuccessPrompt("0000", "添加菜单成功");
             list.add(param);
-            promptMessage.setResult(list);
+            o = MsgOut.success("添加参数成功", list);
         } catch (AppException e){
             e.printStackTrace();
-            promptMessage = PromptMessage.createErrorPrompt("0000", "添加菜单失败");
+            o = MsgOut.error("添加菜单失败");
         }
 
-        return this.renderJson(promptMessage);
+        return this.renderJson(o);
     }
 
     @RequestMapping(value = "/params", method = RequestMethod.PUT)
+    @RolesAllowed({"ROLE_params:update", "ROLE_root"})
     public String update(@Valid Param param, BindingResult bindingResult){
-        PromptMessage promptMessage;
+        MsgOut o;
         try {
             if(bindingResult.hasErrors()){
-                promptMessage = PromptMessage.createErrorPrompt("0000", "更新菜单失败xxxxx");
+                o = MsgOut.success("更新参数失败");
                 List<FieldError> fieldErrors = bindingResult.getFieldErrors();
                 for (FieldError field : fieldErrors) {
-
                     LOGGER.debug("{}={}",field.getField(), field.getDefaultMessage());
-
                 }
-                return this.renderJson(promptMessage);
+                return this.renderJson(o);
             }
             List<Param> list = new ArrayList<>();
             paramService.update(param);
-            promptMessage = PromptMessage.createSuccessPrompt("0000", "更新菜单成功");
             list.add(param);
-            promptMessage.setResult(list);
+            o = MsgOut.success("添加参数成功", list);
         } catch (AppException e){
             e.printStackTrace();
-            promptMessage = PromptMessage.createErrorPrompt("0000", "更新菜单失败");
+            o = MsgOut.success("更新参数失败");
         }
 
-        return this.renderJson(promptMessage);
+        return this.renderJson(o);
     }
 
     @RequestMapping(value = "/params/{id}", method = RequestMethod.DELETE)
+    @RolesAllowed({"ROLE_params:delete", "ROLE_root"})
     public String delete(@PathVariable("id") Long id){
-        PromptMessage promptMessage;
+        MsgOut o;
         try {
             paramService.delete(id);
-            promptMessage = PromptMessage.createSuccessPrompt("0000", "删除菜单成功");
+            o = MsgOut.success("删除参数成功");
         } catch (AppException e){
             e.printStackTrace();
-            promptMessage = PromptMessage.createErrorPrompt("0000", "删除菜单失败");
+            o = MsgOut.success("删除参数失败");
         }
 
-        return this.renderJson(promptMessage);
+        return this.renderJson(o);
     }
 }

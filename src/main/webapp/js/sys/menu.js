@@ -54,7 +54,7 @@ function getTree() {
     	url: config.initMenuUrl,
     	dataType: "json",
     	success: function (result) {
-    		zNodes = result.result;
+    		zNodes = result.data;
 
             var node = {};
             node.link = '-1';
@@ -153,13 +153,13 @@ function saveMenu(){
             async: false,
             success: function(json){
                 if (json.type == 'SUCCESS') {
-                    $.messager.alert(json.title, json.text,'info');
+                    $.messager.alert(json.title, json.msg,'info');
                     var treeNode = zTree.getSelectedNodes()[0];
                     treeNode.name = params.name;
                     treeNode.link = params.link;
                     zTree.updateNode(treeNode);
                 }else{
-                    $.messager.alert(json.title, json.text,'error');
+                    $.messager.alert(json.title, json.msg,'error');
                 }
             },
             error : function() {
@@ -185,10 +185,10 @@ function beforeRename(treeId, treeNode, newName){
                 async: false,
                 success: function (json) {
                     if (json.type == 'SUCCESS') {
-                        treeNode.id = json.result[0].id;
+                        treeNode.id = json.data[0].id;
                         zTree.updateNode(treeNode)
                         addStatus = false;
-                        $.messager.alert(json.title, json.text,'info');
+                        $.messager.alert(json.title, json.msg,'info');
                     }
                 },
                 error: function () {
@@ -206,7 +206,7 @@ function beforeRename(treeId, treeNode, newName){
                 async: false,
                 success: function (json) {
                     if (json.type != 'SUCCESS') {
-                        $.messager.alert(json.title, json.text,'info');
+                        $.messager.alert(json.title, json.msg,'info');
                     }
                 },
                 error: function () {
@@ -247,7 +247,7 @@ function removeTreeNode() {
                     success: function (json) {
                         if (json.type == 'SUCCESS') {
                             zTree.removeNode(nodes[0]);
-                            $.messager.alert(json.title, json.text,'info');
+                            $.messager.alert(json.title, json.msg,'info');
                         }
                     },
                     error: function () {

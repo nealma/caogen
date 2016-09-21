@@ -1,9 +1,9 @@
 package com.caogen.security;
 
-import com.caogen.dao.RoleMapper;
 import com.caogen.dao.SysUserMapper;
 import com.caogen.dao.UserRoleLinkMapper;
 import com.caogen.domain.Resource;
+import com.caogen.domain.SecureUser;
 import com.caogen.domain.SysUser;
 import com.caogen.domain.UserRoleLink;
 import com.caogen.service.ResourceService;
@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -33,8 +32,6 @@ public class MyUserDetailsService implements UserDetailsService {
 
     @Autowired
     private SysUserMapper sysUserMapper;
-    @Autowired
-    private RoleMapper roleMapper;
     @Autowired
     private UserRoleLinkMapper userRoleLinkMapper;
 
@@ -83,7 +80,7 @@ public class MyUserDetailsService implements UserDetailsService {
         }
 
         LOGGER.info("grantedAuthorities --> {}", grantedAuthorities);
-        return new User(username, sysUser.getPassword(), true, true, true, true, grantedAuthorities);
+        return new SecureUser(username, sysUser.getPassword(), grantedAuthorities);
     }
 
 }

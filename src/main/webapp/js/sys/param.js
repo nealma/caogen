@@ -88,11 +88,11 @@ function updateData(){
 			async: false,
 			success: function(json){
 				if (json.type == 'SUCCESS') {
-					$.messager.alert(json.title, json.text,'info');
+					$.messager.alert(json.title, json.msg,'info');
 					$('#dialog').dialog('close')
 					loadDatagrid();
 				}else{
-					$.messager.alert(json.title, json.text,'error');
+					$.messager.alert(json.title, json.msg,'error');
 					$('#dialog').dialog('close')
 				}
 			},
@@ -115,11 +115,11 @@ function createData(){
 			async: false,
 			success: function(json){
 				if (json.type == 'SUCCESS') {
-					$.messager.alert(json.title, json.text,'info');
+					$.messager.alert(json.title, json.msg,'info');
 					$('#dialog').dialog('close')
 					loadDatagrid();
 				}else{
-					$.messager.alert(json.title, json.text,'error');
+					$.messager.alert(json.title, json.msg,'error');
 					$('#dialog').dialog('close')
 				}
 			},
@@ -142,11 +142,11 @@ function deleteData() {
 				async: false,
 				success: function (json) {
 					if (json.type == 'SUCCESS') {
-						$.messager.alert(json.title, json.text, 'info');
+						$.messager.alert(json.title, json.msg, 'info');
 						$('#dialog').dialog('close')
 						loadDatagrid();
 					} else {
-						$.messager.alert(json.title, json.text, 'error');
+						$.messager.alert(json.title, json.msg, 'error');
 						$('#dialog').dialog('close')
 					}
 				},
