@@ -22,13 +22,6 @@ public abstract class BaseController {
         return JSON.toJSONString(object);
     }
 
-    protected String renderPageJson(Page object) {
-        JSONObject json = new JSONObject();
-        json.put("total", object.getTotal());
-        json.put("rows", object.getResult());
-        return JSON.toJSONString(json);
-    }
-
     protected HttpServletRequest getRequest(){
         ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         return servletRequestAttributes.getRequest();

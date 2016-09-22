@@ -2,6 +2,8 @@ package com.caogen.domain;
 
 import com.caogen.core.domain.Page;
 
+import javax.validation.constraints.Max;
+
 public class Resource extends Page {
     /**
      *  自增主键,所属表字段为t_sys_resource.id
@@ -11,6 +13,7 @@ public class Resource extends Page {
     /**
      *  名称,所属表字段为t_sys_resource.name
      */
+    @Max(2)
     private String name;
 
     /**

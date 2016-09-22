@@ -13,10 +13,8 @@ public class MsgOut {
     private String title;
     private String error;
     private Object data;
-
-    public MsgOut(){
-
-    }
+    private Long total;
+    private Object rows;
 
     public MsgOut(Integer code, String msg, String type, String title, Object data) {
         this.code = code;
@@ -72,6 +70,22 @@ public class MsgOut {
 
     public void setError(String error) {
         this.error = error;
+    }
+
+    public Long getTotal() {
+        return total;
+    }
+
+    public void setTotal(Long total) {
+        this.total = total;
+    }
+
+    public Object getRows() {
+        return rows;
+    }
+
+    public void setRows(Object rows) {
+        this.rows = rows;
     }
 
     /**

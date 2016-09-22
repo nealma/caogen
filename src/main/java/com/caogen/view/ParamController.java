@@ -1,13 +1,10 @@
 package com.caogen.view;
 
-import com.caogen.core.exception.AppException;
 import com.caogen.core.web.BaseController;
 import com.caogen.core.web.MsgOut;
 import com.caogen.domain.Param;
 import com.caogen.service.ParamService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -31,53 +28,32 @@ public class ParamController extends BaseController{
     @RolesAllowed({"ROLE_params:view", "ROLE_root"})
     public String list(Param param){
         LOGGER.debug("page={}, rows={}", param.getPage(), param.getRows());
-        try {
-            paramService.select(param);
-        } catch (AppException e){
-            e.printStackTrace();
-        }
-        return this.renderPageJson(param);
+        MsgOut o = MsgOut.success();
+        paramService.select(param);
+        o.setRows(param.getResult());
+        o.setTotal(param.getTotal());
+        return this.renderJson(o);
     }
 
     @RequestMapping(value = "/params", method = RequestMethod.POST)
     @RolesAllowed({"ROLE_params:create", "ROLE_root"})
     public String create(Param param){
         MsgOut o;
-        try {
-            List<Param> list = new ArrayList<>();
-            paramService.insert(param);
-            list.add(param);
-            o = MsgOut.success(list);
-        } catch (AppException e){
-            e.printStackTrace();
-            o = MsgOut.error();
-        }
-
+        List<Param> list = new ArrayList<>();
+        paramService.insert(param);
+        list.add(param);
+        o = MsgOut.success(list);
         return this.renderJson(o);
     }
 
     @RequestMapping(value = "/params", method = RequestMethod.PUT)
     @RolesAllowed({"ROLE_params:update", "ROLE_root"})
-    public String update(@Valid Param param, BindingResult bindingResult){
+    public String update(@Valid Param param){
         MsgOut o;
-        try {
-            if(bindingResult.hasErrors()){
-                o = MsgOut.error();
-                List<FieldError> fieldErrors = bindingResult.getFieldErrors();
-                for (FieldError field : fieldErrors) {
-                    LOGGER.debug("{}={}",field.getField(), field.getDefaultMessage());
-                }
-                return this.renderJson(o);
-            }
-            List<Param> list = new ArrayList<>();
-            paramService.update(param);
-            list.add(param);
-            o = MsgOut.success(list);
-        } catch (AppException e){
-            e.printStackTrace();
-            o = MsgOut.error();
-        }
-
+        List<Param> list = new ArrayList<>();
+        paramService.update(param);
+        list.add(param);
+        o = MsgOut.success(list);
         return this.renderJson(o);
     }
 
@@ -85,14 +61,8 @@ public class ParamController extends BaseController{
     @RolesAllowed({"ROLE_params:delete", "ROLE_root"})
     public String delete(@PathVariable("id") Long id){
         MsgOut o;
-        try {
-            paramService.delete(id);
-            o = MsgOut.success();
-        } catch (AppException e){
-            e.printStackTrace();
-            o = MsgOut.error();
-        }
-
+        paramService.delete(id);
+        o = MsgOut.success();
         return this.renderJson(o);
     }
 }

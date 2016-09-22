@@ -6,10 +6,8 @@ import com.caogen.core.web.BaseController;
 import com.caogen.core.web.MsgOut;
 import com.caogen.domain.Resource;
 import com.caogen.service.ResourceService;
-import com.caogen.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -32,7 +30,6 @@ import java.util.List;
 public class MenuController extends BaseController {
 
     @Autowired private ResourceService resourceService;
-    @Autowired private RoleService roleService;
 
     /**
      *
@@ -83,27 +80,16 @@ public class MenuController extends BaseController {
     public String list() {
         LOGGER.error("sessionId = {}", JSON.toJSON(RequestContextHolder.getRequestAttributes().getSessionId()));
         List<Resource> list;
-        MsgOut o;
-        try {
-//        if(1==1)throw new NullPointerException();
-            Collection<GrantedAuthority> grantedAuthorities
-                    = (Collection<GrantedAuthority>) SecurityContextHolder.getContext()
-                                                            .getAuthentication().getAuthorities();
+        Collection<GrantedAuthority> grantedAuthorities
+                = (Collection<GrantedAuthority>) SecurityContextHolder.getContext()
+                .getAuthentication().getAuthorities();
 
-            if (grantedAuthorities == AuthorityUtils.NO_AUTHORITIES) {
-               o = MsgOut.error("Access Deny.");
-            }
-
-            List<String> grant = new ArrayList<>();
-            grantedAuthorities.forEach(grantedAuthority -> {
-                grant.add(grantedAuthority.getAuthority().replace("ROLE_",""));
-            });
-            list = resourceService.selectByResourceLink(grant.toArray(new String[0]));
-            o = MsgOut.success(list);
-        } catch (Exception e) {
-            o = MsgOut.error();
-            e.printStackTrace();
-        }
+        List<String> grant = new ArrayList<>();
+        grantedAuthorities.forEach(grantedAuthority -> {
+            grant.add(grantedAuthority.getAuthority().replace("ROLE_",""));
+        });
+        list = resourceService.selectByResourceLink(grant.toArray(new String[0]));
+        MsgOut o = MsgOut.success(list);
         o.setError(SecurityContextHolder.getContext().getAuthentication().getName());
         return this.renderJson(o);
     }
@@ -158,55 +144,30 @@ public class MenuController extends BaseController {
     @RolesAllowed({"ROLE_menus:create", "ROLE_root"})
     public String create(Resource resource) {
         MsgOut o;
-        try {
-            List<Resource> list = new ArrayList<>();
-            LOGGER.debug(renderJson(resource));
-            resourceService.insert(resource);
-            list.add(resource);
-            o = MsgOut.success(list);
-        } catch (AppException e) {
-            e.printStackTrace();
-            o = MsgOut.error();
-        }
-
+        List<Resource> list = new ArrayList<>();
+        LOGGER.debug(renderJson(resource));
+        resourceService.insert(resource);
+        list.add(resource);
+        o = MsgOut.success(list);
         return this.renderJson(o);
     }
 
     @RequestMapping(value = "/menus", method = RequestMethod.PUT)
     @RolesAllowed({"ROLE_menus:update", "ROLE_root"})
-    public String update(@Valid Resource resource, BindingResult bindingResult) {
+    public String update(@Valid Resource resource) {
         MsgOut o;
-        try {
-            if (bindingResult.hasErrors()) {
-                o = MsgOut.error();
-                List<FieldError> fieldErrors = bindingResult.getFieldErrors();
-                for (FieldError field : fieldErrors) {
-                    LOGGER.debug("{}={}", field.getField(), field.getDefaultMessage());
-                }
-                return this.renderJson(o);
-            }
-            List<Resource> list = new ArrayList<>();
-            resourceService.update(resource);
-            list.add(resource);
-            o = MsgOut.success(list);
-        } catch (AppException e) {
-            e.printStackTrace();
-            o = MsgOut.error();
-        }
+        List<Resource> list = new ArrayList<>();
+        resourceService.update(resource);
+        list.add(resource);
+        o = MsgOut.success(list);
         return this.renderJson(o);
     }
     @RolesAllowed({"ROLE_menus:delete", "ROLE_root"})
     @RequestMapping(value = "/menus/{id}", method = RequestMethod.DELETE)
     public String delete(@PathVariable("id") Long id) {
         MsgOut o;
-        try {
-            resourceService.delete(id);
-            o = MsgOut.success();
-        } catch (AppException e) {
-            e.printStackTrace();
-            o = MsgOut.error();
-        }
-
+        resourceService.delete(id);
+        o = MsgOut.success();
         return this.renderJson(o);
     }
 
@@ -215,15 +176,8 @@ public class MenuController extends BaseController {
     public String getMenuByRoleId(@PathVariable("roleId") Long id) {
         List<Resource> list;
         MsgOut o;
-        try {
-            list = resourceService.selectByRoleId(id);
-            o = MsgOut.success(list);
-            o.setData(list);
-        } catch (AppException e) {
-            e.printStackTrace();
-            o = MsgOut.error();
-        }
-
+        list = resourceService.selectByRoleId(id);
+        o = MsgOut.success(list);
         return this.renderJson(o);
     }
 
@@ -231,14 +185,8 @@ public class MenuController extends BaseController {
     @RolesAllowed({"ROLE_menus:grant", "ROLE_root"})
     public String grant(Long id, String mids) {
         MsgOut o;
-        try {
-            resourceService.grant(id, mids);
-            o = MsgOut.success();
-        } catch (AppException e) {
-            e.printStackTrace();
-            o = MsgOut.error();
-        }
-
+        resourceService.grant(id, mids);
+        o = MsgOut.success();
         return this.renderJson(o);
     }
 }
