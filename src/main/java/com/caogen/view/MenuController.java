@@ -85,6 +85,7 @@ public class MenuController extends BaseController {
         List<Resource> list;
         MsgOut o;
         try {
+//        if(1==1)throw new NullPointerException();
             Collection<GrantedAuthority> grantedAuthorities
                     = (Collection<GrantedAuthority>) SecurityContextHolder.getContext()
                                                             .getAuthentication().getAuthorities();
@@ -98,9 +99,9 @@ public class MenuController extends BaseController {
                 grant.add(grantedAuthority.getAuthority().replace("ROLE_",""));
             });
             list = resourceService.selectByResourceLink(grant.toArray(new String[0]));
-            o = MsgOut.success("加载菜单成功", list);
-        } catch (AppException e) {
-            o = MsgOut.error("加载菜单失败");
+            o = MsgOut.success(list);
+        } catch (Exception e) {
+            o = MsgOut.error();
             e.printStackTrace();
         }
         o.setError(SecurityContextHolder.getContext().getAuthentication().getName());
@@ -162,10 +163,10 @@ public class MenuController extends BaseController {
             LOGGER.debug(renderJson(resource));
             resourceService.insert(resource);
             list.add(resource);
-            o = MsgOut.success("添加菜单成功", list);
+            o = MsgOut.success(list);
         } catch (AppException e) {
             e.printStackTrace();
-            o = MsgOut.error("添加菜单失败");
+            o = MsgOut.error();
         }
 
         return this.renderJson(o);
@@ -177,7 +178,7 @@ public class MenuController extends BaseController {
         MsgOut o;
         try {
             if (bindingResult.hasErrors()) {
-                o = MsgOut.error("更新加菜单失败");
+                o = MsgOut.error();
                 List<FieldError> fieldErrors = bindingResult.getFieldErrors();
                 for (FieldError field : fieldErrors) {
                     LOGGER.debug("{}={}", field.getField(), field.getDefaultMessage());
@@ -187,10 +188,10 @@ public class MenuController extends BaseController {
             List<Resource> list = new ArrayList<>();
             resourceService.update(resource);
             list.add(resource);
-            o = MsgOut.success("更新菜单成功", list);
+            o = MsgOut.success(list);
         } catch (AppException e) {
             e.printStackTrace();
-            o = MsgOut.error("更新菜单失败");
+            o = MsgOut.error();
         }
         return this.renderJson(o);
     }
@@ -200,10 +201,10 @@ public class MenuController extends BaseController {
         MsgOut o;
         try {
             resourceService.delete(id);
-            o = MsgOut.success("删除菜单成功");
+            o = MsgOut.success();
         } catch (AppException e) {
             e.printStackTrace();
-            o = MsgOut.error("删除菜单失败");
+            o = MsgOut.error();
         }
 
         return this.renderJson(o);
@@ -216,11 +217,11 @@ public class MenuController extends BaseController {
         MsgOut o;
         try {
             list = resourceService.selectByRoleId(id);
-            o = MsgOut.success("获取角色资源成功", list);
+            o = MsgOut.success(list);
             o.setData(list);
         } catch (AppException e) {
             e.printStackTrace();
-            o = MsgOut.error("获取角色资源失败");
+            o = MsgOut.error();
         }
 
         return this.renderJson(o);
@@ -232,10 +233,10 @@ public class MenuController extends BaseController {
         MsgOut o;
         try {
             resourceService.grant(id, mids);
-            o = MsgOut.success("授权成功");
+            o = MsgOut.success();
         } catch (AppException e) {
             e.printStackTrace();
-            o = MsgOut.error("授权失败");
+            o = MsgOut.error();
         }
 
         return this.renderJson(o);

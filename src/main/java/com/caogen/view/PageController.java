@@ -24,7 +24,6 @@ public class PageController extends BaseController {
 
     /**
      * 登录页面
-     * @return
      */
     @RequestMapping(value = {"", "/", "/login"}, method = RequestMethod.GET)
     @PermitAll
@@ -35,7 +34,6 @@ public class PageController extends BaseController {
 
     /**
      * 成功登录后页面
-     * @return
      */
     @RequestMapping(value = "index", method = RequestMethod.GET)
     @PermitAll
@@ -46,8 +44,6 @@ public class PageController extends BaseController {
 
     /**
      * 主页
-     * @param
-     * @return
      */
     @RequestMapping(value = "home", method = RequestMethod.GET)
     @PermitAll
@@ -59,8 +55,6 @@ public class PageController extends BaseController {
 
     /**
      * 角色页
-     * @param
-     * @return
      */
     @RequestMapping(value = "role", method = RequestMethod.GET)
     @RolesAllowed({"ROLE_role", "ROLE_root"})
@@ -71,7 +65,6 @@ public class PageController extends BaseController {
 
     /**
      * 菜单页
-     * @return
      */
     @RequestMapping(value = "menu", method = RequestMethod.GET)
     @RolesAllowed({"ROLE_menu", "ROLE_root"})
@@ -82,12 +75,31 @@ public class PageController extends BaseController {
 
     /**
      * 系统参数页
-     * @return
      */
     @RequestMapping(value = "param", method = RequestMethod.GET)
     @RolesAllowed({"ROLE_param", "ROLE_root"})
     public ModelAndView param() {
         LOGGER.info("|--> {}", this.getRequest().getRequestURI());
         return new ModelAndView("sys/param");
+    }
+
+    /**
+     * 404页面
+     */
+    @RequestMapping(value = {"404"})
+    @PermitAll
+    public ModelAndView error404() {
+        LOGGER.info("|--> {}", this.getRequest().getRequestURI());
+        return new ModelAndView("error/404");
+    }
+
+    /**
+     * 500页面
+     */
+    @RequestMapping(value = {"500"})
+    @PermitAll
+    public ModelAndView error500() {
+        LOGGER.info("|--> {}", this.getRequest().getRequestURI());
+        return new ModelAndView("error/500");
     }
 }

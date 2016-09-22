@@ -80,15 +80,17 @@ public class MsgOut {
      */
     private enum MsgType {
 
-        SUCCESS(0, "SUCCESS", "成功"), INFO(1, "INFO", "信息"), WARNING(2, "WARNING", "警告"), ERROR(3, "ERROR", "错误");
+        SUCCESS(0, "操作成功啦", "SUCCESS", "成功"), INFO(1, "来信息啦", "INFO", "信息"), WARNING(2, "警告来了", "WARNING", "警告"), ERROR(3, "操作失败啦", "ERROR", "错误");
 
         private int code;
         private String type;
         private String title;
+        private String msg;
 
 
-        MsgType(int code, String type, String title) {
+        MsgType(int code, String msg, String type, String title) {
             this.code = code;
+            this.msg = msg;
             this.type = type;
             this.title = title;
         }
@@ -105,9 +107,15 @@ public class MsgOut {
             return type;
         }
     }
-
+    public static MsgOut success(){
+        return getInstance(MsgType.SUCCESS.code, MsgType.SUCCESS.msg);
+    }
     public static MsgOut success(String msg){
         return getInstance(MsgType.SUCCESS.code, msg);
+    }
+
+    public static MsgOut success(Object data){
+        return getInstance(MsgType.SUCCESS.code, MsgType.SUCCESS.msg, data);
     }
 
     public static MsgOut success(String msg, Object data){
@@ -137,7 +145,12 @@ public class MsgOut {
     public static MsgOut error(String msg, Object data){
         return getInstance(MsgType.ERROR.code, msg, data);
     }
-
+    public static MsgOut error(){
+        return getInstance(MsgType.ERROR.code, MsgType.ERROR.msg);
+    }
+    public static MsgOut error(Object data){
+        return getInstance(MsgType.ERROR.code, MsgType.ERROR.msg, data);
+    }
     public static MsgOut getInstance(int code, String msg){
         return getInstance(code, msg, null);
     }

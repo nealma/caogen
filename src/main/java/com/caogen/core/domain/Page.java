@@ -7,40 +7,40 @@ import java.util.List;
  */
 public class Page<T> {
 
-    protected List<T> result = null;
+    protected transient List<T> result = null;
     /**
      * 总数
      */
-    protected long total = -1;
+    protected transient long total = -1;
     /**
      * 页码
      */
-    protected int page = 1;
+    protected transient int page = 1;
 
     /**
      * 每页记录数
      */
-    protected int rows = Integer.MAX_VALUE;
+    protected transient int rows = Integer.MAX_VALUE;
 
     /**
      * 偏移量
      */
-    protected long offset = 0;
+    protected transient long offset = 0;
 
     /**
      * 排序字段
      */
-    protected String orderBy = null;
+    protected transient String orderBy = null;
 
     /**
      * 排序顺序
      */
-    protected String orderDir = null;
+    protected transient String orderDir = null;
 
     /**
      * 搜索条件
      */
-    protected String sSearch = null;
+    protected transient String sSearch = null;
 
     /**
      * 获得页内的记录列表.

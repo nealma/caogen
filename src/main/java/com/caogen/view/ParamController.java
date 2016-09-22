@@ -47,10 +47,10 @@ public class ParamController extends BaseController{
             List<Param> list = new ArrayList<>();
             paramService.insert(param);
             list.add(param);
-            o = MsgOut.success("添加参数成功", list);
+            o = MsgOut.success(list);
         } catch (AppException e){
             e.printStackTrace();
-            o = MsgOut.error("添加菜单失败");
+            o = MsgOut.error();
         }
 
         return this.renderJson(o);
@@ -62,7 +62,7 @@ public class ParamController extends BaseController{
         MsgOut o;
         try {
             if(bindingResult.hasErrors()){
-                o = MsgOut.success("更新参数失败");
+                o = MsgOut.error();
                 List<FieldError> fieldErrors = bindingResult.getFieldErrors();
                 for (FieldError field : fieldErrors) {
                     LOGGER.debug("{}={}",field.getField(), field.getDefaultMessage());
@@ -72,10 +72,10 @@ public class ParamController extends BaseController{
             List<Param> list = new ArrayList<>();
             paramService.update(param);
             list.add(param);
-            o = MsgOut.success("添加参数成功", list);
+            o = MsgOut.success(list);
         } catch (AppException e){
             e.printStackTrace();
-            o = MsgOut.success("更新参数失败");
+            o = MsgOut.error();
         }
 
         return this.renderJson(o);
@@ -87,10 +87,10 @@ public class ParamController extends BaseController{
         MsgOut o;
         try {
             paramService.delete(id);
-            o = MsgOut.success("删除参数成功");
+            o = MsgOut.success();
         } catch (AppException e){
             e.printStackTrace();
-            o = MsgOut.success("删除参数失败");
+            o = MsgOut.error();
         }
 
         return this.renderJson(o);

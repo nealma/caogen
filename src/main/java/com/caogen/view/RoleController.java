@@ -34,10 +34,10 @@ public class RoleController extends BaseController{
         MsgOut o;
         try {
             list = roleService.select(role);
-            o = MsgOut.success("加载角色成功", list);
+            o = MsgOut.success(list);
         } catch (AppException e){
             e.printStackTrace();
-            o = MsgOut.error("加载角色失败");
+            o = MsgOut.error();
         }
 
         return this.renderJson(o);
@@ -52,10 +52,10 @@ public class RoleController extends BaseController{
             LOGGER.debug(renderJson(role));
             roleService.insert(role);
             list.add(role);
-            o = MsgOut.success("添加角色成功", list);
+            o = MsgOut.success(list);
         } catch (AppException e){
             e.printStackTrace();
-            o = MsgOut.error("添加角色失败");
+            o = MsgOut.error();
         }
 
         return this.renderJson(o);
@@ -67,7 +67,7 @@ public class RoleController extends BaseController{
         MsgOut o;
         try {
             if(bindingResult.hasErrors()){
-                o = MsgOut.error("更新角色失败");
+                o = MsgOut.error();
                 List<FieldError> fieldErrors = bindingResult.getFieldErrors();
                 for (FieldError field : fieldErrors) {
                     LOGGER.debug("{}={}",field.getField(), field.getDefaultMessage());
@@ -77,10 +77,10 @@ public class RoleController extends BaseController{
             List<Role> list = new ArrayList<>();
             roleService.update(role);
             list.add(role);
-            o = MsgOut.success("更新角色成功", list);
+            o = MsgOut.success(list);
         } catch (AppException e){
             e.printStackTrace();
-            o = MsgOut.error("更新角色失败");
+            o = MsgOut.error();
         }
 
         return this.renderJson(o);
@@ -92,10 +92,10 @@ public class RoleController extends BaseController{
         MsgOut o;
         try {
             roleService.delete(id);
-            o = MsgOut.success("删除角色成功");
+            o = MsgOut.success();
         } catch (AppException e){
             e.printStackTrace();
-            o = MsgOut.error("删除角色失败");
+            o = MsgOut.error();
         }
 
         return this.renderJson(o);
