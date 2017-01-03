@@ -105,19 +105,19 @@
             <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
         <!--</table>-->
 
-        <!--<table tableName="t_sys_user"-->
-               <!--domainObjectName="SysUser"-->
-               <!--mapperName="SysUserMapper"-->
-               <!--sqlProviderName="SysUserMapper"-->
-               <!--enableCountByExample="false"-->
-               <!--enableUpdateByExample="false"-->
-               <!--enableDeleteByExample="false"-->
-               <!--enableSelectByExample="false"-->
-               <!--selectByExampleQueryId="false">-->
-            <!--<property name="useActualColumnNames" value="false"/>-->
-            <!--<property name="rootClass" value="com.caogen.core.domain.Page"/>-->
-            <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
-        <!--</table>-->
+        <table tableName="t_sys_user"
+               domainObjectName="SysUser"
+               mapperName="SysUserMapper"
+               sqlProviderName="SysUserMapper"
+               enableCountByExample="false"
+               enableUpdateByExample="false"
+               enableDeleteByExample="false"
+               enableSelectByExample="false"
+               selectByExampleQueryId="false">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.caogen.core.domain.Page"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
+        </table>
         
         <table tableName="test"></table>
 

@@ -1,9 +1,6 @@
 package com.caogen.domain;
 
-import com.alibaba.fastjson.annotation.JSONField;
 import com.caogen.core.domain.Page;
-
-import java.util.List;
 
 public class SysUser extends Page {
     /**
@@ -19,7 +16,6 @@ public class SysUser extends Page {
     /**
      *  密码,所属表字段为t_sys_user.password
      */
-    @JSONField(serialize = false)
     private String password;
 
     /**
@@ -61,16 +57,6 @@ public class SysUser extends Page {
      *  状态 0:正常 1:删除,所属表字段为t_sys_user.rstatus
      */
     private Byte rstatus;
-
-    private List<Resource> resource;
-
-    public List<Resource> getResource() {
-        return resource;
-    }
-
-    public void setResource(List<Resource> resource) {
-        this.resource = resource;
-    }
 
     public Long getId() {
         return id;
